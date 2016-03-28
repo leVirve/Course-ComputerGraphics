@@ -18,6 +18,7 @@
 # define PREV_MODEL_KEY_Z 0x5A
 #endif
 
+extern ModelView mv;
 
 void onIdle();
 

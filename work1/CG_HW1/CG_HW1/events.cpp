@@ -8,7 +8,7 @@ void onIdle()
 
 void onDisplay(void)
 {
-    unsigned int mode = solid ? GL_FILL : GL_LINE;
+    unsigned int mode = mv.solid ? GL_FILL : GL_LINE;
 
     // clear canvas
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -19,6 +19,7 @@ void onDisplay(void)
     glEnableVertexAttribArray(iLocColor);
 
     GLfloat vertex[9], color[9];
+    GLMmodel* model = mv.get_model();
 
     for (int k = 0; k < (int) model->numtriangles; ++k) {
 
@@ -78,15 +79,15 @@ void onKeyboard(unsigned char key, int x, int y)
         break;
     case CHANGE_MODE_KEYw:
     case CHANGE_MODE_KEYW:
-        solid = solid ? false : true;
+        mv.solid = mv.solid ? false : true;
         break;
     case NEXT_MODEL_KEY_x:
     case NEXT_MODEL_KEY_X:
-        loadOBJModel((++curr_model_index) % modelfiles.size());
+        mv.loadNextModel();
         break;
     case PREV_MODEL_KEY_z:
     case PREV_MODEL_KEY_Z:
-        loadOBJModel((--curr_model_index) % modelfiles.size());
+        mv.loadPrevModel();
         break;
     }
     printf("\n");

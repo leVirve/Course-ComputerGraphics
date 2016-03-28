@@ -6,6 +6,7 @@
 #include <float.h>
 
 // C++ headers
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -15,12 +16,9 @@
 
 // self-headers
 #include "glm.h"
+#include "dirent.h"
 #include "textfile.h"
 
 
 extern GLint iLocPosition;
 extern GLint iLocColor;
-extern GLMmodel* model;
-extern bool solid;
-extern unsigned int curr_model_index;
-extern std::vector<std::string> modelfiles;

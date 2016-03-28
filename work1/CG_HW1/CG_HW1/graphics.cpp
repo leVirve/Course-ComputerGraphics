@@ -1,25 +1,16 @@
 #include "graphics.h"
 
 
-void loadOBJModel(int index)
+ModelView::ModelView(std::string folder)
 {
-    if (model != NULL) {
-        free(model);
-    }
-    char* filename = (char*) modelfiles[index].c_str();
-    char title[1024];
-
-    model = glmReadOBJ((char*) filename);
-    printf("%s\n", filename);
-
-    snprintf(title, 1024, "%s - 10420 CS550000 CG HW1 Salas", filename);
-    glutSetWindowTitle(title);
-
-    normalizeModel();
+    this->folder = folder;
+    this->findAllModels(this->folder.c_str(), 0);
+    this->model = NULL;
+    this->index = 0;
+    this->size = filenames.size();
 }
 
-
-void normalizeModel()
+void ModelView::normalize(GLMmodel* model)
 {
     GLfloat scale = 0;
 
@@ -43,6 +34,77 @@ void normalizeModel()
     for (int k = 0; k < 3; ++k)
         for (unsigned int i = 0; i <= model->numvertices; ++i)
             model->vertices[3 * i + k] /= scale;
+}
+
+void ModelView::loadOBJ()
+{
+    if (model != NULL) glmDelete(model);
+
+    model = glmReadOBJ((char*)filenames[index].c_str());
+    std::cout << filenames[index] << std::endl;
+
+    char title[1024];
+    snprintf(
+        title, 1024, "(%d/%d) %s - 10420 CS550000 CG HW1 Salas",
+        index + 1, size, filenames[index].c_str());
+    glutSetWindowTitle(title);
+
+    this->normalize(model);
+}
+
+void ModelView::findAllModels(const char *name, int level)
+{
+    DIR *dir;
+    struct dirent *entry;
+
+    if (!(dir = opendir(name))) return;
+    if (!(entry = readdir(dir))) return;
+
+    do {
+        char path[1024];
+        int len = snprintf(path, sizeof(path) - 1, "%s/%s", name, entry->d_name);
+        path[len] = '\0';
+
+        if (entry->d_type == DT_DIR) {
+            if (strcmp(entry->d_name, ".") == 0
+                || strcmp(entry->d_name, "..") == 0) continue;
+            printf("%*s[%s]\n", level * 2, "", entry->d_name);
+            this->findAllModels(path, level + 1);
+        }
+        else {
+            this->filenames.push_back(path);
+            printf("%*s- <loaded> %s\n", level * 2, "", entry->d_name);
+        }
+    } while (entry = readdir(dir));
+    closedir(dir);
+}
+
+GLMmodel* ModelView::get_model()
+{
+    return this->model;
+}
+
+void ModelView::activate()
+{
+    this->loadOBJ();
+}
+
+void ModelView::loadNextModel()
+{
+    this->index = (index + 1) % size;
+    this->loadOBJ();
+}
+
+void ModelView::loadPrevModel()
+{
+    this->index = (size + index - 1) % size;
+    this->loadOBJ();
+}
+
+ModelView::~ModelView()
+{
+    // free
+    glmDelete(this->model);
 }
 
 void showShaderCompileStatus(GLuint shader, GLint *shaderCompiled)
