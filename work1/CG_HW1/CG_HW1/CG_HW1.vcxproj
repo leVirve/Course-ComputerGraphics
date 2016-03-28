@@ -18,6 +18,7 @@
     <ClCompile Include="textfile.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cg.h" />
     <ClInclude Include="dirent.h" />
     <ClInclude Include="events.h" />
     <ClInclude Include="glm.h" />

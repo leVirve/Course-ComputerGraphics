@@ -1,14 +1,7 @@
 #pragma once
 
-#include <stdio.h>
-
-#include <GL/glew.h>
-#include <freeglut/glut.h>
-
-#include "glm.h"
-
+#include "cg.h"
 #include "graphics.h"
-
 
 #ifndef GLUT_WHEEL_UP
 # define GLUT_WHEEL_UP   0x0003
@@ -25,12 +18,6 @@
 # define PREV_MODEL_KEY_Z 0x5A
 #endif
 
-
-extern GLint iLocPosition;
-extern GLint iLocColor;
-extern GLMmodel* model;
-extern bool solid;
-extern unsigned int curr_model_index;
 
 void onIdle();
 

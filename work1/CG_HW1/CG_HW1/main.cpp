@@ -13,7 +13,6 @@ GLint iLocPosition;
 GLint iLocColor;
 GLMmodel* model;
 
-char* obj_list = "obj_list";
 bool solid = false;
 unsigned int curr_model_index = 0;
 vector<string> modelfiles;
@@ -33,12 +32,11 @@ void listObjdir(const char *name, int level)
         path[len] = '\0';
 
         if (entry->d_type == DT_DIR) {
-            if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
-                continue;
+            if (strcmp(entry->d_name, ".") == 0
+             || strcmp(entry->d_name, "..") == 0) continue;
             printf("%*s[%s]\n", level * 2, "", entry->d_name);
             listObjdir(path, level + 1);
-        }
-        else {
+        } else {
             modelfiles.push_back(path);
             printf("%*s- <loaded> %s\n", level * 2, "", entry->d_name);
         }
