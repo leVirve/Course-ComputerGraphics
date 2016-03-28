@@ -21,29 +21,29 @@ vector<string> modelfiles;
 
 void listObjdir(const char *name, int level)
 {
-	DIR *dir;
-	struct dirent *entry;
+    DIR *dir;
+    struct dirent *entry;
 
-	if (!(dir = opendir(name))) return;
-	if (!(entry = readdir(dir))) return;
+    if (!(dir = opendir(name))) return;
+    if (!(entry = readdir(dir))) return;
 
-	do {
-		char path[1024];
-		int len = snprintf(path, sizeof(path) - 1, "%s/%s", name, entry->d_name);
-		path[len] = '\0';
+    do {
+        char path[1024];
+        int len = snprintf(path, sizeof(path) - 1, "%s/%s", name, entry->d_name);
+        path[len] = '\0';
 
-		if (entry->d_type == DT_DIR) {
-			if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
-				continue;
-			printf("%*s[%s]\n", level * 2, "", entry->d_name);
-			listObjdir(path, level + 1);
-		}
-		else {
-			modelfiles.push_back(path);
-			printf("%*s- <loaded> %s\n", level * 2, "", entry->d_name);
-		}
-	} while (entry = readdir(dir));
-	closedir(dir);
+        if (entry->d_type == DT_DIR) {
+            if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+                continue;
+            printf("%*s[%s]\n", level * 2, "", entry->d_name);
+            listObjdir(path, level + 1);
+        }
+        else {
+            modelfiles.push_back(path);
+            printf("%*s- <loaded> %s\n", level * 2, "", entry->d_name);
+        }
+    } while (entry = readdir(dir));
+    closedir(dir);
 }
 
 int main(int argc, char **argv)
@@ -66,7 +66,7 @@ int main(int argc, char **argv)
         exit(1);
     }
 
-	listObjdir("./ColorModels", 0);
+    listObjdir("./ColorModels", 0);
 
     // load obj models through glm
     loadOBJModel(curr_model_index);
