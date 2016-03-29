@@ -67,7 +67,7 @@ void ModelView::findAllModels(const char *name, int level)
 
         if (entry->d_type == DT_DIR) {
             if (strcmp(entry->d_name, ".") == 0
-                || strcmp(entry->d_name, "..") == 0) continue;
+             || strcmp(entry->d_name, "..") == 0) continue;
             printf("%*s[%s]\n", level * 2, "", entry->d_name);
             this->findAllModels(path, level + 1);
         }

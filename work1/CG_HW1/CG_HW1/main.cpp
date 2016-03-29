@@ -21,7 +21,7 @@ int main(int argc, char **argv)
 
     // create window
     glutInitWindowPosition(500, 100);
-    glutInitWindowSize(600, 600);
+    glutInitWindowSize(800, 800);
     glutCreateWindow("10420 CS550000 CG HW1 Salas");
 
     glewInit();
