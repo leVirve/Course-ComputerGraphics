@@ -12,18 +12,17 @@ ModelView::ModelView(std::string folder)
 
 void ModelView::normalize(GLMmodel* model)
 {
-    GLfloat scale = 0;
+    GLfloat scale = 0, centroid, len;
 
     for (int k = 0; k < 3; ++k) {
-        GLfloat max = -FLT_MAX, min = FLT_MAX, centroid, len;
-
+        GLfloat max = -FLT_MAX, min = FLT_MAX;
         for (unsigned int i = 1; i <= model->numvertices; ++i) {
             GLfloat val = model->vertices[3 * i + k];
             if (val > max) max = val;
             if (min > val) min = val;
         }
 
-        centroid = (max + min) / 2;
+        centroid = model->position[k] = (max + min) / 2;
         len = (max - min) / 2;
         if (len > scale) scale = len;
 

@@ -11,7 +11,7 @@ public:
 
     void activate();
 
-    void normalize(GLMmodel * model);
+    void normalize(GLMmodel* model);
 
     GLMmodel* get_model();
 
