@@ -15,6 +15,8 @@ public:
 
     GLMmodel* get_model();
 
+    void toggleSolid();
+
     void loadNextModel();
     void loadPrevModel();
 
@@ -30,7 +32,9 @@ private:
 
     int index;
     int size;
+
     GLMmodel* model;
+
     std::string folder;
     std::vector<std::string> filenames;
 

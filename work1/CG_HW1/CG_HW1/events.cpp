@@ -72,20 +72,18 @@ void onMouseMotion(int x, int y)
 void onKeyboard(unsigned char key, int x, int y)
 {
     printf("%18s(): (%d, %d) key: %c(0x%02X) ", __FUNCTION__, x, y, key, key);
-    switch (key)
+    char k = toupper(key);
+    switch (k)
     {
     case GLUT_KEY_ESC: /* the Esc key */
         exit(0);
         break;
-    case CHANGE_MODE_KEYw:
-    case CHANGE_MODE_KEYW:
-        mv.solid = mv.solid ? false : true;
+    case CHANGE_MODE_KEY_W:
+        mv.toggleSolid();
         break;
-    case NEXT_MODEL_KEY_x:
     case NEXT_MODEL_KEY_X:
         mv.loadNextModel();
         break;
-    case PREV_MODEL_KEY_z:
     case PREV_MODEL_KEY_Z:
         mv.loadPrevModel();
         break;

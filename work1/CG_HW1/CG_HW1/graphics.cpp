@@ -101,9 +101,13 @@ void ModelView::loadPrevModel()
     this->loadOBJ();
 }
 
+void ModelView::toggleSolid()
+{
+    this->solid = solid ? false : true;
+}
+
 ModelView::~ModelView()
 {
-    // free
     glmDelete(this->model);
 }
 
