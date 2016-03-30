@@ -22,12 +22,13 @@ void ModelView::normalize(GLMmodel* model)
             if (min > val) min = val;
         }
 
-        centroid = model->position[k] = (max + min) / 2;
+        centroid = (max + min) / 2;
         len = (max - min) / 2;
         if (len > scale) scale = len;
 
         for (unsigned int i = 1; i <= model->numvertices; ++i)
             model->vertices[3 * i + k] -= centroid;
+        model->position[k] = 0;
     }
 
     for (int k = 0; k < 3; ++k)
