@@ -18,12 +18,19 @@ void onDisplay(void)
     glEnableVertexAttribArray(iLocPosition);
     glEnableVertexAttribArray(iLocColor);
 
+    glVertexAttribPointer(iLocPosition, 3, GL_FLOAT, GL_FALSE, 0, mv.model.vertices);
+    glVertexAttribPointer(iLocColor,    3, GL_FLOAT, GL_FALSE, 0, mv.model.colors);
+    glDrawArrays(GL_TRIANGLES, 0, mv.model.size);
+
+#if 0
+
     GLfloat v[9], c[9];
     GLMmodel* model = mv.get_model();
 
     glVertexAttribPointer(iLocPosition, 3, GL_FLOAT, GL_FALSE, 0, v);
     glVertexAttribPointer(iLocColor,    3, GL_FLOAT, GL_FALSE, 0, c);
 
+    
     for (int k = 0; k < (int) model->numtriangles; ++k) {
         for (int i = 0; i < 3; ++i) {
             int idx = model->triangles[k].vindices[i];
@@ -34,6 +41,7 @@ void onDisplay(void)
         }
         glDrawArrays(GL_TRIANGLES, 0, 3);
     }
+#endif
 
     glutSwapBuffers();
 }

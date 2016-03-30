@@ -3,6 +3,27 @@
 #include "cg.h"
 
 
+class DisplayModel {
+
+public:
+
+    DisplayModel();
+
+    ~DisplayModel();
+
+    void load(GLMmodel* m);
+
+    void arrange_array(int n);
+
+    GLfloat* vertices;
+    GLfloat* colors;
+
+    int size;
+    int capacity;
+
+};
+
+
 class ModelView {
 
 public:
@@ -13,6 +34,7 @@ public:
 
     void normalize(GLMmodel* model);
 
+    DisplayModel model;
     GLMmodel* get_model();
 
     void toggleSolid();
@@ -33,7 +55,7 @@ private:
     int index;
     int size;
 
-    GLMmodel* model;
+    GLMmodel* glm_model;
 
     std::string folder;
     std::vector<std::string> filenames;

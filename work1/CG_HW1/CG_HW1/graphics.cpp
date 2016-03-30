@@ -5,7 +5,7 @@ ModelView::ModelView(std::string folder)
 {
     this->folder = folder;
     this->findAllModels(this->folder.c_str(), 0);
-    this->model = NULL;
+    this->glm_model = NULL;
     this->index = 0;
     this->size = filenames.size();
 }
@@ -37,9 +37,9 @@ void ModelView::normalize(GLMmodel* model)
 
 void ModelView::loadOBJ()
 {
-    if (model != NULL) glmDelete(model);
+    if (glm_model != NULL) glmDelete(glm_model);
 
-    model = glmReadOBJ((char*)filenames[index].c_str());
+    glm_model = glmReadOBJ((char*) filenames[index].c_str());
     std::cout << filenames[index] << std::endl;
 
     char title[1024];
@@ -48,7 +48,9 @@ void ModelView::loadOBJ()
         index + 1, size, filenames[index].c_str());
     glutSetWindowTitle(title);
 
-    this->normalize(model);
+    this->normalize(glm_model);
+
+    this->model.load(glm_model);
 }
 
 void ModelView::findAllModels(const char *name, int level)
@@ -80,7 +82,7 @@ void ModelView::findAllModels(const char *name, int level)
 
 GLMmodel* ModelView::get_model()
 {
-    return this->model;
+    return this->glm_model;
 }
 
 void ModelView::activate()
@@ -107,7 +109,46 @@ void ModelView::toggleSolid()
 
 ModelView::~ModelView()
 {
-    glmDelete(this->model);
+    glmDelete(this->glm_model);
+}
+
+
+DisplayModel::DisplayModel()
+{
+    this->size = 0;
+    this->arrange_array(50000);
+}
+
+DisplayModel::~DisplayModel()
+{
+    free(this->vertices);
+    free(this->colors);
+}
+
+void DisplayModel::load(GLMmodel* m)
+{
+    this->size = m->numtriangles * 3;
+    if (size > capacity) arrange_array(this->size);
+
+    for (unsigned int k = 0; k < m->numtriangles; ++k) {
+        for (int i = 0; i < 3; ++i) {
+            int idx = m->triangles[k].vindices[i];
+            for (int dim = 0; dim < 3; ++dim) {
+                this->vertices[(3 * k + i) * 3 + dim] = m->vertices[idx * 3 + dim];
+                this->colors[(3 * k + i) * 3 + dim] = m->colors[idx * 3 + dim];
+            }
+        }
+    }
+}
+
+void DisplayModel::arrange_array(int n)
+{
+    if (vertices != NULL) free(vertices);
+    if (colors != NULL) free(colors);
+    this->vertices = (GLfloat*)malloc(sizeof(GLfloat) * 3 * n);
+    this->colors = (GLfloat*)malloc(sizeof(GLfloat) * 3 * n);
+    this->capacity = n;
+    std::cerr << "Mem reallocate to capacity = " << capacity << std::endl;
 }
 
 void showShaderCompileStatus(GLuint shader, GLint *shaderCompiled)
