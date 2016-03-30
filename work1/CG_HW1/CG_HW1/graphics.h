@@ -61,7 +61,3 @@ private:
     std::vector<std::string> filenames;
 
 };
-
-void showShaderCompileStatus(GLuint shader, GLint *shaderCompiled);
-
-void setShaders();

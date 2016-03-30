@@ -17,8 +17,6 @@
 // self-headers
 #include "glm.h"
 #include "dirent.h"
-#include "textfile.h"
-
 
 extern GLint iLocPosition;
 extern GLint iLocColor;

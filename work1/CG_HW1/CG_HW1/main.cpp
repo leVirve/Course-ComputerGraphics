@@ -1,4 +1,5 @@
 #include "events.h"
+#include "shaders.h"
 #include "graphics.h"
 
 #pragma comment (lib, "glew32.lib")

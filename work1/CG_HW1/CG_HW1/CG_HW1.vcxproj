@@ -15,7 +15,7 @@
     <ClCompile Include="glm.c" />
     <ClCompile Include="graphics.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="textfile.cpp" />
+    <ClCompile Include="shaders.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cg.h" />
@@ -23,7 +23,7 @@
     <ClInclude Include="events.h" />
     <ClInclude Include="glm.h" />
     <ClInclude Include="graphics.h" />
-    <ClInclude Include="textfile.h" />
+    <ClInclude Include="shaders.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shader.frag" />
