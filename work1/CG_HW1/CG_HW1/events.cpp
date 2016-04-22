@@ -18,8 +18,45 @@ void onDisplay(void)
     glEnableVertexAttribArray(iLocPosition);
     glEnableVertexAttribArray(iLocColor);
 
+    //MVP
+    Matrix4 T;
+    Matrix4 S;
+    Matrix4 R;
+
+    Matrix4 M = Matrix4(
+        1, 0, 0, -0.5,
+        0, 1, 0, 0,
+        0, 0, 1, 0,
+        0, 0, 0, 1);
+    Matrix4 V = Matrix4(
+        1, 0, 0, 0,
+        0, 1, 0, 0,
+        0, 0, 1, 0,
+        0, 0, 0, 1);
+    Matrix4 P = Matrix4(
+        1, 0, 0, 0,
+        0, 1, 0, 0,
+        0, 0, -1, 0,
+        0, 0, 0, 1);
+
+    Matrix4 MVP = P*V*M;
+
+    GLfloat mvp[16];
+    // row-major ---> column-major
+    mvp[0] = MVP[0];  mvp[4] = MVP[1];   mvp[8]  = MVP[2];    mvp[12] = MVP[3];
+    mvp[1] = MVP[4];  mvp[5] = MVP[5];   mvp[9]  = MVP[6];    mvp[13] = MVP[7];
+    mvp[2] = MVP[8];  mvp[6] = MVP[9];   mvp[10] = MVP[10];   mvp[14] = MVP[11];
+    mvp[3] = MVP[12]; mvp[7] = MVP[13];  mvp[11] = MVP[14];   mvp[15] = MVP[15];
+
+    // bind array pointers to shader
     glVertexAttribPointer(iLocPosition, 3, GL_FLOAT, GL_FALSE, 0, mv.model.vertices);
     glVertexAttribPointer(iLocColor,    3, GL_FLOAT, GL_FALSE, 0, mv.model.colors);
+
+    // bind uniform matrix to shader
+    glUniformMatrix4fv(iLocMVP, 1, GL_FALSE, mvp);
+
+    // draw the array we just bound
+
     glDrawArrays(GL_TRIANGLES, 0, mv.model.size);
 
 #if 0

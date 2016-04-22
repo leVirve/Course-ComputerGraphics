@@ -17,6 +17,9 @@
 // self-headers
 #include "glm.h"
 #include "dirent.h"
+#include "Matrices.h"
+
 
 extern GLint iLocPosition;
 extern GLint iLocColor;
+extern GLint iLocMVP;
