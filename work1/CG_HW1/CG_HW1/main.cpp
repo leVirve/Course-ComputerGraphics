@@ -11,7 +11,7 @@ using namespace std;
 GLint iLocPosition;
 GLint iLocColor;
 
-ModelView mv = ModelView("./ColorModels");
+ModelView mv("./ColorModels");
 
 
 int main(int argc, char **argv)
