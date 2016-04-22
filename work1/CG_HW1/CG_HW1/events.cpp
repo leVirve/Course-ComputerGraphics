@@ -1,5 +1,63 @@
 #include "events.h"
 
+#include <map>
+#include <string>
+
+char control_mode;
+char proj_mode = 0;
+
+const int right = 1, left = -1, top = 1, bottom = -1;
+const int znear = 1, zfar = 20;
+Vector3 up(0, 1, 0), eye(0, 0, 0), center(0, 0, -1);
+Matrix4 T, S, R, N, M, V, P;
+Matrix4 P_paral = Matrix4(
+   1, 0, 0, 0,
+   0, 1, 0, 0,
+   0, 0, -1, 0,
+   0, 0, 0, 1);
+Matrix4 P_ortho = Matrix4(
+    2 * znear / (right - left), 0, (right + left) / (right - left), 0,
+    0, 2 * znear / (top - bottom), (top + bottom) / (top - bottom), 0,
+    0, 0, -(zfar + znear) / (zfar - znear), -2 * zfar * znear / (zfar - znear),
+    0, 0, -1, 0);
+Matrix4 V_paral = Matrix4(
+    1, 0, 0, 0,
+    0, 1, 0, 0,
+    0, 0, 1, 0,
+    0, 0, 0, 1);
+Matrix4 V_ortho = Matrix4(
+    1, 0, 0, 0,
+    0, 1, 0, 0,
+    0, 0, 1, -2,
+    0, 0, 0, 1);
+
+std::map<char, const char*> mode_desc = {
+    {MODE_EYE_KEY,    "Eye Mode"},
+    {MODE_ROTATE_KEY, "Rotate Mode"},
+    {MODE_TRANS_KEY,  "Translate Mode"},
+    {MODE_SCALE_KEY,  "Scale Mode"},
+};
+
+Matrix4 move_eye(float x, float y, float z)
+{
+    Vector3 v(x, y, z);
+    eye += v, up += v, center += v;
+
+    Vector3 rz(center - eye);
+    Vector3 rx = rz.cross(up - eye);
+    Vector3 ry = rx.cross(rz);
+    return Matrix4(
+        rx[0],   rx[1],  rx[2], 0,
+        ry[0],   ry[1],  ry[2], 0,
+        -rz[0], -rz[1], -rz[2], 0,
+        0, 0, 0, 1
+    ) * Matrix4(
+        1, 0, 0, -eye[0],
+        0, 1, 0, -eye[1],
+        0, 0, 1, -eye[2],
+        0, 0, 0, 1
+    );
+}
 
 void onIdle()
 {
@@ -18,28 +76,12 @@ void onDisplay(void)
     glEnableVertexAttribArray(iLocPosition);
     glEnableVertexAttribArray(iLocColor);
 
-    //MVP
-    Matrix4 T;
-    Matrix4 S;
-    Matrix4 R;
+    ////MVP
+    Matrix4 v;
+    if (proj_mode) { P = P_ortho; v = V_ortho; }
+    else { P = P_paral; v = V_paral; }
 
-    Matrix4 M = Matrix4(
-        1, 0, 0, -0.5,
-        0, 1, 0, 0,
-        0, 0, 1, 0,
-        0, 0, 0, 1);
-    Matrix4 V = Matrix4(
-        1, 0, 0, 0,
-        0, 1, 0, 0,
-        0, 0, 1, 0,
-        0, 0, 0, 1);
-    Matrix4 P = Matrix4(
-        1, 0, 0, 0,
-        0, 1, 0, 0,
-        0, 0, -1, 0,
-        0, 0, 0, 1);
-
-    Matrix4 MVP = P*V*M;
+    Matrix4 MVP = P*v*V*M*T*S*R*N;
 
     GLfloat mvp[16];
     // row-major ---> column-major
@@ -67,7 +109,7 @@ void onDisplay(void)
     glVertexAttribPointer(iLocPosition, 3, GL_FLOAT, GL_FALSE, 0, v);
     glVertexAttribPointer(iLocColor,    3, GL_FLOAT, GL_FALSE, 0, c);
 
-    
+
     for (int k = 0; k < (int) model->numtriangles; ++k) {
         for (int i = 0; i < 3; ++i) {
             int idx = model->triangles[k].vindices[i];
@@ -113,24 +155,75 @@ void onMouseMotion(int x, int y)
 
 void onKeyboard(unsigned char key, int x, int y)
 {
-    printf("%18s(): (%d, %d) key: %c(0x%02X) ", __FUNCTION__, x, y, key, key);
     char k = toupper(key);
     switch (k)
     {
-    case GLUT_KEY_ESC: /* the Esc key */
-        exit(0);
+    case GLUT_KEY_ESC: exit(0); break;
+    case CHANGE_MODE_KEY_W: mv.toggleSolid(); break;
+    case NEXT_MODEL_KEY_X:  mv.loadNextModel(); break;
+    case PREV_MODEL_KEY_Z:  mv.loadPrevModel(); break;
+    case CH_PROJ_KEY: proj_mode = proj_mode ? 0 : 1; break;
+    case MODE_TRANS_KEY:  case MODE_SCALE_KEY:
+    case MODE_ROTATE_KEY: case MODE_EYE_KEY:
+        control_mode = k; printf("In control mode: %s\n", mode_desc[k]); break;
+    case POS_X_KEY:
+        switch (control_mode) {
+        case MODE_TRANS_KEY:  T.translate(0.1f, 0, 0); break;
+        case MODE_SCALE_KEY:  S.scale(1.01f, 1, 1); break;
+        case MODE_ROTATE_KEY: R.rotateX(1); break;
+        case MODE_EYE_KEY:    V = move_eye(0.01f, 0, 0); break;
+        default: break;
+        }
         break;
-    case CHANGE_MODE_KEY_W:
-        mv.toggleSolid();
+    case NEG_X_KEY:
+        switch (control_mode) {
+        case MODE_TRANS_KEY:  T.translate(-0.1f, 0, 0); break;
+        case MODE_SCALE_KEY:  S.scale(0.99f, 1, 1); break;
+        case MODE_ROTATE_KEY: R.rotateX(-1); break;
+        case MODE_EYE_KEY:    V = move_eye(-0.01f, 0, 0); break;
+        default: break;
+        }
         break;
-    case NEXT_MODEL_KEY_X:
-        mv.loadNextModel();
+    case POS_Y_KEY:
+        switch (control_mode) {
+        case MODE_TRANS_KEY:  T.translate(0, 0.1f, 0); break;
+        case MODE_SCALE_KEY:  S.scale(1, 1.01f, 1); break;
+        case MODE_ROTATE_KEY: R.rotateY(1); break;
+        case MODE_EYE_KEY:    V = move_eye(0, 0.1f, 0); break;
+        default: break;
+        }
         break;
-    case PREV_MODEL_KEY_Z:
-        mv.loadPrevModel();
+    case NEG_Y_KEY:
+        switch (control_mode) {
+        case MODE_TRANS_KEY:  T.translate(0, -0.1f, 0); break;
+        case MODE_SCALE_KEY:  S.scale(1, 0.99f, 1); break;
+        case MODE_ROTATE_KEY: R.rotateY(-1); break;
+        case MODE_EYE_KEY:    V = move_eye(0, -0.1f, 0); break;
+        default: break;
+        }
+        break;
+    case POS_Z_KEY:
+        switch (control_mode) {
+        case MODE_TRANS_KEY:  T.translate(0, 0, 0.1f); break;
+        case MODE_SCALE_KEY:  S.scale(1, 1, 1.01f); break;
+        case MODE_ROTATE_KEY: R.rotateZ(1); break;
+        case MODE_EYE_KEY:    V = move_eye(0, 0, 0.1f); break;
+        default: break;
+        }
+        break;
+    case NEG_Z_KEY:
+        switch (control_mode) {
+        case MODE_TRANS_KEY:  T.translate(0, 0, -0.1f); break;
+        case MODE_SCALE_KEY:  S.scale(1, 1, 0.99f); break;
+        case MODE_ROTATE_KEY: R.rotateZ(-1); break;
+        case MODE_EYE_KEY:    V = move_eye(0, 0, -0.1f); break;
+        default: break;
+        }
+        break;
+    default:
+        printf("%18s(): (%d, %d) key: %c(0x%02X)\n", __FUNCTION__, x, y, key, key);
         break;
     }
-    printf("\n");
 }
 
 void onKeyboardSpecial(int key, int x, int y) {

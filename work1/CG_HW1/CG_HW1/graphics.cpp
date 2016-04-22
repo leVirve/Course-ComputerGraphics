@@ -12,7 +12,7 @@ ModelView::ModelView(std::string folder)
 
 void ModelView::normalize(GLMmodel* model)
 {
-    GLfloat scale = 0, centroid, len;
+    GLfloat scale = 0, centroid[3], len;
 
     for (int k = 0; k < 3; ++k) {
         GLfloat max = -FLT_MAX, min = FLT_MAX;
@@ -22,18 +22,17 @@ void ModelView::normalize(GLMmodel* model)
             if (min > val) min = val;
         }
 
-        centroid = (max + min) / 2;
+        centroid[k] = (max + min) / 2;
         len = (max - min) / 2;
         if (len > scale) scale = len;
-
-        for (unsigned int i = 1; i <= model->numvertices; ++i)
-            model->vertices[3 * i + k] -= centroid;
         model->position[k] = 0;
     }
 
-    for (int k = 0; k < 3; ++k)
-        for (unsigned int i = 0; i <= model->numvertices; ++i)
-            model->vertices[3 * i + k] /= scale;
+    Matrix4 t, s;
+    t.translate(-centroid[0] / scale, -centroid[1] / scale, -centroid[2] / scale);
+    s.scale(1 / scale);
+
+    N = t * s;
 }
 
 void ModelView::loadOBJ()
