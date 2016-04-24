@@ -2,6 +2,7 @@
 
 char control_mode;
 char proj_mode = 0;
+int lastX = -1, lastY = -1;
 
 Vector3 up(0, 1, 0), eye(0, 0, 0), center(0, 0, -1);
 Matrix4 T, S, R, M, V, P;
@@ -109,15 +110,15 @@ void onMouse(int who, int state, int x, int y)
     case GLUT_LEFT_BUTTON:   printf("left button   "); break;
     case GLUT_MIDDLE_BUTTON: printf("middle button "); break;
     case GLUT_RIGHT_BUTTON:  printf("right button  "); break;
-    case GLUT_WHEEL_UP:      printf("wheel up      "); break;
-    case GLUT_WHEEL_DOWN:    printf("wheel down    "); break;
+    case GLUT_WHEEL_UP:      mv.cur_model->s.scale(1.01f); break;
+    case GLUT_WHEEL_DOWN:    mv.cur_model->s.scale(0.99f); break;
     default:                 printf("0x%02X          ", who); break;
     }
 
     switch (state)
     {
-    case GLUT_DOWN: printf("start "); break;
-    case GLUT_UP:   printf("end   "); break;
+    case GLUT_DOWN: lastX = x, lastY = y; break;
+    case GLUT_UP:   lastX = lastY = -1;   break;
     }
 
     printf("\n");
@@ -125,7 +126,9 @@ void onMouse(int who, int state, int x, int y)
 
 void onMouseMotion(int x, int y)
 {
-    printf("%18s(): (%d, %d) mouse move\n", __FUNCTION__, x, y);
+    float dx = x - lastX, dy = y - lastY;
+    mv.cur_model->t.translate(dx / 800, -dy / 800, 0);
+    lastX = x, lastY = y;
 }
 
 void onKeyboard(unsigned char key, int x, int y)
