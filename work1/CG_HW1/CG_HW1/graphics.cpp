@@ -5,52 +5,22 @@ ModelView::ModelView(std::string folder)
 {
     this->folder = folder;
     this->findAllModels(this->folder.c_str(), 0);
-    this->glm_model = NULL;
-    this->index = 0;
+    this->index = this->cur_idx = 0;
     this->size = filenames.size();
-}
-
-void ModelView::normalize(GLMmodel* model)
-{
-    GLfloat scale = 0, centroid[3], len;
-
-    for (int k = 0; k < 3; ++k) {
-        GLfloat max = -FLT_MAX, min = FLT_MAX;
-        for (unsigned int i = 1; i <= model->numvertices; ++i) {
-            GLfloat val = model->vertices[3 * i + k];
-            if (val > max) max = val;
-            if (min > val) min = val;
-        }
-
-        centroid[k] = (max + min) / 2;
-        len = (max - min) / 2;
-        if (len > scale) scale = len;
-        model->position[k] = 0;
-    }
-
-    Matrix4 t, s;
-    t.translate(-centroid[0] / scale, -centroid[1] / scale, -centroid[2] / scale);
-    s.scale(1 / scale);
-
-    N = t * s;
+    this->gallery_size = max_models;
 }
 
 void ModelView::loadOBJ()
 {
-    if (glm_model != NULL) glmDelete(glm_model);
-
-    glm_model = glmReadOBJ((char*) filenames[index].c_str());
     std::cout << filenames[index] << std::endl;
 
     char title[1024];
-    snprintf(
+    _snprintf(
         title, 1024, "(%d/%d) %s - 10420 CS550000 CG HW1 Salas",
         index + 1, size, filenames[index].c_str());
     glutSetWindowTitle(title);
 
-    this->normalize(glm_model);
 
-    this->model.load(glm_model);
 }
 
 void ModelView::findAllModels(const char *name, int level)
@@ -63,7 +33,7 @@ void ModelView::findAllModels(const char *name, int level)
 
     do {
         char path[1024];
-        int len = snprintf(path, sizeof(path) - 1, "%s/%s", name, entry->d_name);
+        int len = _snprintf(path, sizeof(path) - 1, "%s/%s", name, entry->d_name);
         path[len] = '\0';
 
         if (entry->d_type == DT_DIR) {
@@ -80,12 +50,11 @@ void ModelView::findAllModels(const char *name, int level)
     closedir(dir);
 }
 
-GLMmodel* ModelView::get_model()
+void ModelView::activate()
 {
-    return this->glm_model;
+    this->loadOBJ();
 }
 
-void ModelView::activate()
 {
     this->loadOBJ();
 }
@@ -109,44 +78,74 @@ void ModelView::toggleSolid()
 
 ModelView::~ModelView()
 {
-    glmDelete(this->glm_model);
+    for (int i = 0; i < gallery_size; ++i) delete this->models[i];
 }
 
 
-DisplayModel::DisplayModel()
+Model::Model(const char* filename)
 {
+    this->vertices = this->colors = NULL;
     this->size = 0;
+    this->body = this->normalize(glmReadOBJ((char*)filename));
     this->arrange_array(50000);
+    this->load();
 }
 
-DisplayModel::~DisplayModel()
+Model::~Model()
 {
-    free(this->vertices);
-    free(this->colors);
+    if (this->vertices != NULL) free(this->vertices);
+    if (this->colors != NULL) free(this->colors);
+    if (this->body != NULL) glmDelete(this->body);
 }
 
-void DisplayModel::load(GLMmodel* m)
+GLMmodel* Model::normalize(GLMmodel* m)
 {
-    this->size = m->numtriangles * 3;
+    GLfloat scale = 0, len;
+    Vector3 centroid;
+
+    for (int k = 0; k < 3; ++k) {
+        GLfloat max = -FLT_MAX, min = FLT_MAX;
+        for (unsigned int i = 1; i <= m->numvertices; ++i) {
+            GLfloat val = m->vertices[3 * i + k];
+            if (val > max) max = val;
+            if (min > val) min = val;
+        }
+
+        centroid[k] = (max + min) / 2;
+        len = (max - min) / 2;
+        if (len > scale) scale = len;
+        m->position[k] = 0;
+    }
+
+    Matrix4 _t, _s;
+    _t.translate(-centroid / scale);
+    _s.scale(1 / scale);
+    this->n = _t * _s;
+
+    return m;
+}
+
+void Model::load()
+{
+    this->size = body->numtriangles * 3;
     if (size > capacity) arrange_array(this->size);
 
-    for (unsigned int k = 0; k < m->numtriangles; ++k) {
+    for (unsigned int k = 0; k < body->numtriangles; ++k) {
         for (int i = 0; i < 3; ++i) {
-            int idx = m->triangles[k].vindices[i];
+            int idx = body->triangles[k].vindices[i];
             for (int dim = 0; dim < 3; ++dim) {
-                this->vertices[(3 * k + i) * 3 + dim] = m->vertices[idx * 3 + dim];
-                this->colors[(3 * k + i) * 3 + dim] = m->colors[idx * 3 + dim];
+                this->vertices[(3 * k + i) * 3 + dim] = body->vertices[idx * 3 + dim];
+                this->colors[(3 * k + i) * 3 + dim] = body->colors[idx * 3 + dim];
             }
         }
     }
 }
 
-void DisplayModel::arrange_array(int n)
+void Model::arrange_array(int n)
 {
     if (vertices != NULL) free(vertices);
     if (colors != NULL) free(colors);
     this->vertices = (GLfloat*) malloc(sizeof(GLfloat) * 3 * n);
     this->colors = (GLfloat*) malloc(sizeof(GLfloat) * 3 * n);
     this->capacity = n;
-    std::cerr << "Mem reallocate to capacity = " << capacity << std::endl;
 }

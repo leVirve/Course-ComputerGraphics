@@ -4,7 +4,7 @@ char control_mode;
 char proj_mode = 0;
 
 Vector3 up(0, 1, 0), eye(0, 0, 0), center(0, 0, -1);
-Matrix4 T, S, R, N, M, V, P;
+Matrix4 T, S, R, M, V, P;
 Matrix4 P_paral = Matrix4(
    1, 0, 0, 0,
    0, 1, 0, 0,
@@ -64,25 +64,17 @@ void onDisplay(void)
     if (proj_mode) { P = P_ortho; v = V_ortho; }
     else { P = P_paral; v = V_paral; }
 
-    Matrix4 MVP = P*v*V*M*T*S*R*N;
+    Matrix4 MVP = P*v*V*M*T*S*R;
 
-    GLfloat mvp[16];
-    // row-major ---> column-major
-    mvp[0] = MVP[0];  mvp[4] = MVP[1];   mvp[8]  = MVP[2];    mvp[12] = MVP[3];
-    mvp[1] = MVP[4];  mvp[5] = MVP[5];   mvp[9]  = MVP[6];    mvp[13] = MVP[7];
-    mvp[2] = MVP[8];  mvp[6] = MVP[9];   mvp[10] = MVP[10];   mvp[14] = MVP[11];
-    mvp[3] = MVP[12]; mvp[7] = MVP[13];  mvp[11] = MVP[14];   mvp[15] = MVP[15];
+    for (int i = 0; i < mv.gallery_size; ++i) {
+        Matrix4 mvp = MVP * mv.models[i]->t * mv.models[i]->s * mv.models[i]->r * mv.models[i]->n;
+        mvp.transpose();
+        glVertexAttribPointer(iLocPosition, 3, GL_FLOAT, GL_FALSE, 0, mv.models[i]->vertices);
+        glVertexAttribPointer(iLocColor, 3, GL_FLOAT, GL_FALSE, 0, mv.models[i]->colors);
+        glUniformMatrix4fv(iLocMVP, 1, GL_FALSE, mvp.get());
 
-    // bind array pointers to shader
-    glVertexAttribPointer(iLocPosition, 3, GL_FLOAT, GL_FALSE, 0, mv.model.vertices);
-    glVertexAttribPointer(iLocColor,    3, GL_FLOAT, GL_FALSE, 0, mv.model.colors);
-
-    // bind uniform matrix to shader
-    glUniformMatrix4fv(iLocMVP, 1, GL_FALSE, mvp);
-
-    // draw the array we just bound
-
-    glDrawArrays(GL_TRIANGLES, 0, mv.model.size);
+        glDrawArrays(GL_TRIANGLES, 0, mv.models[i]->size);
+    }
 
 #if 0
 

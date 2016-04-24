@@ -8,24 +8,27 @@ const int right = 1, left = -1, top = 1, bottom = -1,
 const int max_models = 4;
 
 
-class DisplayModel {
+class Model {
 
 public:
 
-    DisplayModel();
+    Model(const char* filename);
 
-    ~DisplayModel();
+    ~Model();
 
-    void load(GLMmodel* m);
-
+    void load();
     void arrange_array(int n);
 
+    GLMmodel* normalize(GLMmodel* m);
+
+    GLMmodel* body;
     GLfloat* vertices;
     GLfloat* colors;
 
+    Matrix4 t, s, r, n;
+
     int size;
     int capacity;
-
 };
 
 
@@ -37,11 +40,6 @@ public:
 
     void activate();
 
-    void normalize(GLMmodel* model);
-
-    DisplayModel model;
-    GLMmodel* get_model();
-
     void toggleSolid();
 
     void loadNextModel();
@@ -50,6 +48,10 @@ public:
     ~ModelView();
 
     bool solid;
+
+    int gallery_size;
+
+    Model* models[max_models];
 
 private:
 
@@ -60,11 +62,7 @@ private:
     int index;
     int size;
 
-    GLMmodel* glm_model;
-
     std::string folder;
     std::vector<std::string> filenames;
 
-};
-
-extern Matrix4 N;
+};
