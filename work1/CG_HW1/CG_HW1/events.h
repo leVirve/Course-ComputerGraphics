@@ -10,9 +10,10 @@
 
 #ifndef GLUT_KEY_ESC
 # define GLUT_KEY_ESC	  0x1B
-# define CHANGE_MODE_KEY_W 0x57
-# define NEXT_MODEL_KEY_X  0x58
-# define PREV_MODEL_KEY_Z  0x5A
+# define CHANGE_MODE_KEY_W 'W'
+# define SELECT_NEXT_KEY   'X'
+# define SELECT_PREV_KEY   'Z'
+# define MODE_GALLERY_KEY  'G'
 # define MODE_TRANS_KEY    'T'
 # define MODE_SCALE_KEY    'S'
 # define MODE_ROTATE_KEY   'R'
@@ -24,10 +25,18 @@
 # define NEG_Y_KEY         'K'
 # define POS_Z_KEY         'M'
 # define NEG_Z_KEY         'O'
+# define HELP_DOC_KEY      'H'
 #endif
 
 extern ModelView mv;
 
+
+static std::map<char, const char*> mode_desc = {
+    { MODE_EYE_KEY,    "Eye Mode" },
+    { MODE_ROTATE_KEY, "Rotate Mode" },
+    { MODE_TRANS_KEY,  "Translate Mode" },
+    { MODE_SCALE_KEY,  "Scale Mode" },
+};
 
 void onIdle();
 

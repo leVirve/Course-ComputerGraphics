@@ -3,6 +3,11 @@
 #include "cg.h"
 
 
+const int right = 1, left = -1, top = 1, bottom = -1,
+          znear = 1, zfar = 20;
+const int max_models = 4;
+
+
 class DisplayModel {
 
 public:

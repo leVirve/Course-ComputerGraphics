@@ -9,6 +9,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <map>
 
 // depebdencies
 #include <GL/glew.h>

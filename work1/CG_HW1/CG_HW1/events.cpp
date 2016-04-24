@@ -1,13 +1,8 @@
 #include "events.h"
 
-#include <map>
-#include <string>
-
 char control_mode;
 char proj_mode = 0;
 
-const int right = 1, left = -1, top = 1, bottom = -1;
-const int znear = 1, zfar = 20;
 Vector3 up(0, 1, 0), eye(0, 0, 0), center(0, 0, -1);
 Matrix4 T, S, R, N, M, V, P;
 Matrix4 P_paral = Matrix4(
@@ -30,13 +25,6 @@ Matrix4 V_ortho = Matrix4(
     0, 1, 0, 0,
     0, 0, 1, -2,
     0, 0, 0, 1);
-
-std::map<char, const char*> mode_desc = {
-    {MODE_EYE_KEY,    "Eye Mode"},
-    {MODE_ROTATE_KEY, "Rotate Mode"},
-    {MODE_TRANS_KEY,  "Translate Mode"},
-    {MODE_SCALE_KEY,  "Scale Mode"},
-};
 
 Matrix4 move_eye(float x, float y, float z)
 {
