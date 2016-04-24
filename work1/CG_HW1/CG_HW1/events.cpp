@@ -31,20 +31,15 @@ Matrix4 move_eye(float x, float y, float z)
     Vector3 v(x, y, z);
     eye += v, up += v, center += v;
 
-    Vector3 rz(center - eye);
-    Vector3 rx = rz.cross(up - eye);
-    Vector3 ry = rx.cross(rz);
+    Vector3 rz(center - eye),
+            rx = rz.cross(up - eye),
+            ry = rx.cross(rz);
     return Matrix4(
-        rx[0],   rx[1],  rx[2], 0,
-        ry[0],   ry[1],  ry[2], 0,
+         rx[0],  rx[1],  rx[2], 0,
+         ry[0],  ry[1],  ry[2], 0,
         -rz[0], -rz[1], -rz[2], 0,
-        0, 0, 0, 1
-    ) * Matrix4(
-        1, 0, 0, -eye[0],
-        0, 1, 0, -eye[1],
-        0, 0, 1, -eye[2],
-        0, 0, 0, 1
-    );
+         0,      0,      0,     1
+    ) * Matrix4().translate(-eye);
 }
 
 void onIdle()
