@@ -43,7 +43,12 @@ public:
     void toggleSolid();
 
     void loadNextModel();
+
     void loadPrevModel();
+
+    void selectNextModel();
+
+    void selectPrevModel();
 
     ~ModelView();
 
@@ -53,6 +58,8 @@ public:
 
     Model* models[max_models];
 
+    Model* cur_model;
+
 private:
 
     void findAllModels(const char *name, int level);
@@ -60,9 +67,10 @@ private:
     void loadOBJ();
 
     int index;
+    int cur_idx;
     int size;
 
     std::string folder;
     std::vector<std::string> filenames;
 
-};
+};

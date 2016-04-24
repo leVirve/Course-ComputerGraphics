@@ -140,57 +140,67 @@ void onKeyboard(unsigned char key, int x, int y)
     case CH_PROJ_KEY: proj_mode = proj_mode ? 0 : 1; break;
     case MODE_TRANS_KEY:  case MODE_SCALE_KEY:
     case MODE_ROTATE_KEY: case MODE_EYE_KEY:
+    case MODE_GALLERY_KEY:
+        mv.gallery_size = mv.gallery_size == 4 ? 1 : 4; break;
+    case SELECT_NEXT_KEY:
+        mv.selectNextModel(); break;
+    case SELECT_PREV_KEY:
+        mv.selectPrevModel(); break;
+    case MODE_TRANS_KEY:
+    case MODE_SCALE_KEY:
+    case MODE_ROTATE_KEY:
+    case MODE_EYE_KEY:
         control_mode = k; printf("In control mode: %s\n", mode_desc[k]); break;
     case POS_X_KEY:
         switch (control_mode) {
-        case MODE_TRANS_KEY:  T.translate(0.1f, 0, 0); break;
-        case MODE_SCALE_KEY:  S.scale(1.01f, 1, 1); break;
-        case MODE_ROTATE_KEY: R.rotateX(1); break;
+        case MODE_TRANS_KEY:  mv.cur_model->t.translate(0.1f, 0, 0); break;
+        case MODE_SCALE_KEY:  mv.cur_model->s.scale(1.01f, 1, 1); break;
+        case MODE_ROTATE_KEY: mv.cur_model->r.rotateX(1); break;
         case MODE_EYE_KEY:    V = move_eye(0.01f, 0, 0); break;
         default: break;
         }
         break;
     case NEG_X_KEY:
         switch (control_mode) {
-        case MODE_TRANS_KEY:  T.translate(-0.1f, 0, 0); break;
-        case MODE_SCALE_KEY:  S.scale(0.99f, 1, 1); break;
-        case MODE_ROTATE_KEY: R.rotateX(-1); break;
+        case MODE_TRANS_KEY:  mv.cur_model->t.translate(-0.1f, 0, 0); break;
+        case MODE_SCALE_KEY:  mv.cur_model->s.scale(0.99f, 1, 1); break;
+        case MODE_ROTATE_KEY: mv.cur_model->r.rotateX(-1); break;
         case MODE_EYE_KEY:    V = move_eye(-0.01f, 0, 0); break;
         default: break;
         }
         break;
     case POS_Y_KEY:
         switch (control_mode) {
-        case MODE_TRANS_KEY:  T.translate(0, 0.1f, 0); break;
-        case MODE_SCALE_KEY:  S.scale(1, 1.01f, 1); break;
-        case MODE_ROTATE_KEY: R.rotateY(1); break;
+        case MODE_TRANS_KEY:  mv.cur_model->t.translate(0, 0.1f, 0); break;
+        case MODE_SCALE_KEY:  mv.cur_model->s.scale(1, 1.01f, 1); break;
+        case MODE_ROTATE_KEY: mv.cur_model->r.rotateY(1); break;
         case MODE_EYE_KEY:    V = move_eye(0, 0.1f, 0); break;
         default: break;
         }
         break;
     case NEG_Y_KEY:
         switch (control_mode) {
-        case MODE_TRANS_KEY:  T.translate(0, -0.1f, 0); break;
-        case MODE_SCALE_KEY:  S.scale(1, 0.99f, 1); break;
-        case MODE_ROTATE_KEY: R.rotateY(-1); break;
+        case MODE_TRANS_KEY:  mv.cur_model->t.translate(0, -0.1f, 0); break;
+        case MODE_SCALE_KEY:  mv.cur_model->s.scale(1, 0.99f, 1); break;
+        case MODE_ROTATE_KEY: mv.cur_model->r.rotateY(-1); break;
         case MODE_EYE_KEY:    V = move_eye(0, -0.1f, 0); break;
         default: break;
         }
         break;
     case POS_Z_KEY:
         switch (control_mode) {
-        case MODE_TRANS_KEY:  T.translate(0, 0, 0.1f); break;
-        case MODE_SCALE_KEY:  S.scale(1, 1, 1.01f); break;
-        case MODE_ROTATE_KEY: R.rotateZ(1); break;
+        case MODE_TRANS_KEY:  mv.cur_model->t.translate(0, 0, 0.1f); break;
+        case MODE_SCALE_KEY:  mv.cur_model->s.scale(1, 1, 1.01f); break;
+        case MODE_ROTATE_KEY: mv.cur_model->r.rotateZ(1); break;
         case MODE_EYE_KEY:    V = move_eye(0, 0, 0.1f); break;
         default: break;
         }
         break;
     case NEG_Z_KEY:
         switch (control_mode) {
-        case MODE_TRANS_KEY:  T.translate(0, 0, -0.1f); break;
-        case MODE_SCALE_KEY:  S.scale(1, 1, 0.99f); break;
-        case MODE_ROTATE_KEY: R.rotateZ(-1); break;
+        case MODE_TRANS_KEY:  mv.cur_model->t.translate(0, 0, -0.1f); break;
+        case MODE_SCALE_KEY:  mv.cur_model->s.scale(1, 1, 0.99f); break;
+        case MODE_ROTATE_KEY: mv.cur_model->r.rotateZ(-1); break;
         case MODE_EYE_KEY:    V = move_eye(0, 0, -0.1f); break;
         default: break;
         }
@@ -202,20 +212,12 @@ void onKeyboard(unsigned char key, int x, int y)
 }
 
 void onKeyboardSpecial(int key, int x, int y) {
-    printf("%18s(): (%d, %d) ", __FUNCTION__, x, y);
     switch (key)
     {
-    case GLUT_KEY_LEFT:
-        printf("key: LEFT ARROW");
-        break;
-
-    case GLUT_KEY_RIGHT:
-        printf("key: RIGHT ARROW");
-        break;
-
+    case GLUT_KEY_LEFT:  mv.loadPrevModel(); break;
+    case GLUT_KEY_RIGHT: mv.loadNextModel(); break;
     default:
-        printf("key: 0x%02X      ", key);
-        break;
+        printf("%18s(): (%d, %d) ", __FUNCTION__, x, y); break;
     }
     printf("\n");
 }

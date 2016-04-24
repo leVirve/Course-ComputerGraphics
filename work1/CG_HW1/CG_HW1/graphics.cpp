@@ -64,8 +64,16 @@ void ModelView::activate()
     this->loadOBJ();
 }
 
+void ModelView::selectNextModel()
 {
-    this->loadOBJ();
+    this->cur_idx = (cur_idx + 1) % max_models;
+    this->cur_model = this->models[cur_idx];
+}
+
+void ModelView::selectPrevModel()
+{
+    this->cur_idx = (cur_idx - 1) % max_models;
+    this->cur_model = this->models[cur_idx];
 }
 
 void ModelView::loadNextModel()
