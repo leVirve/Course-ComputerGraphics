@@ -20,7 +20,16 @@ void ModelView::loadOBJ()
         index + 1, size, filenames[index].c_str());
     glutSetWindowTitle(title);
 
+    for (int i = 0; i < gallery_size; ++i) {
+        this->models[i] = new Model(filenames[(index + i) % size].c_str());
+        this->models[i]->s.scale(0.4);
+    }
+    this->models[0]->t.translate(-0.5, 0.5, 0);
+    this->models[1]->t.translate(0.5, 0.5, 0);
+    this->models[2]->t.translate(-0.5, -0.5, 0);
+    this->models[3]->t.translate(0.5, -0.5, 0);
 
+    this->cur_model = models[0];
 }
 
 void ModelView::findAllModels(const char *name, int level)
