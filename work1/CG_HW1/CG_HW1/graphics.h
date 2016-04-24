@@ -61,3 +61,5 @@ private:
     std::vector<std::string> filenames;
 
 };
+
+extern Matrix4 N;

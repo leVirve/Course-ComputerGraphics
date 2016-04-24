@@ -10,6 +10,7 @@ using namespace std;
 // Shader attributes
 GLint iLocPosition;
 GLint iLocColor;
+GLint iLocMVP;
 
 ModelView mv("./ColorModels");
 
