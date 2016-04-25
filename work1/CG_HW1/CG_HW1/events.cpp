@@ -188,5 +188,20 @@ void onKeyboardSpecial(int key, int x, int y) {
 
 void onWindowReshape(int width, int height)
 {
-    printf("%18s(): %dx%d\n", __FUNCTION__, width, height);
+    if (height == 0) height = 1;
+
+    // Set Viewport to window dimensions
+    glViewport(0, 0, width, height);
+
+    GLfloat fAspect = (GLfloat)width / (GLfloat)height;
+
+    // Reset coordinate system
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+
+    // Produce the perspective projection
+    gluPerspective(90.0f, fAspect, znear, zfar);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
 }
