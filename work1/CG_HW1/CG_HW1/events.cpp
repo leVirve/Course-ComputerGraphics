@@ -84,7 +84,7 @@ void onMouse(int who, int state, int x, int y)
 
 void onMouseMotion(int x, int y)
 {
-    float dx = x - lastX, dy = y - lastY;
+    float dx = (float) x - lastX, dy = (float) y - lastY;
     mv.cur_model->t.translate(dx / 800, -dy / 800, 0);
     lastX = x, lastY = y;
 }
@@ -111,6 +111,9 @@ void onKeyboard(unsigned char key, int x, int y)
         mv.selectNextModel(); break;
     case SELECT_PREV_KEY:
         mv.selectPrevModel(); break;
+    case RESET_WORLD_KEY:
+        up = Vector3(0, 1, 0), eye = Vector3(0, 0, 0), center = Vector3(0, 0, -1);
+        V = move_eye(0, 0, 0); break;
     case MODE_TRANS_KEY:
     case MODE_SCALE_KEY:
     case MODE_ROTATE_KEY:

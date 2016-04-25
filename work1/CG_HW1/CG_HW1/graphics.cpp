@@ -15,19 +15,22 @@ void ModelView::loadOBJ()
     char title[1024];
     _snprintf(
         title, 1024, "(%d~%d/%d) %s - 10420 CS550000 CG HW1 Salas",
-        index + 1, index + gallery_size, size, filenames[index].c_str());
+        index + 1, (index + gallery_size) % size, size, filenames[index].c_str());
     glutSetWindowTitle(title);
 
     for (int i = 0; i < gallery_size; ++i) {
         this->models[i] = new Model(filenames[(index + i) % size].c_str());
-        this->models[i]->s.scale(0.4);
+        if (gallery_size != 1) this->models[i]->s.scale(0.4f);
     }
-    this->models[0]->t.translate(-0.5, 0.5, 0);
-    this->models[1]->t.translate(0.5, 0.5, 0);
-    this->models[2]->t.translate(-0.5, -0.5, 0);
-    this->models[3]->t.translate(0.5, -0.5, 0);
-
+    if (gallery_size == 4) {
+        this->models[0]->t.translate(-0.5, 0.5, 0);
+        this->models[1]->t.translate(0.5, 0.5, 0);
+        this->models[2]->t.translate(-0.5, -0.5, 0);
+        this->models[3]->t.translate(0.5, -0.5, 0);
+    }
     this->cur_model = models[0];
+    this->cur_idx = 0;
+    printf("- Model#%d is focused\n", cur_idx + 1);
 }
 
 void ModelView::findAllModels(const char *name, int level)
@@ -66,12 +69,14 @@ void ModelView::selectNextModel()
 {
     this->cur_idx = (cur_idx + 1) % max_models;
     this->cur_model = this->models[cur_idx];
+    printf("- Model#%d is selected\n", cur_idx + 1);
 }
 
 void ModelView::selectPrevModel()
 {
-    this->cur_idx = (cur_idx - 1) % max_models;
+    this->cur_idx = (cur_idx + max_models - 1) % max_models;
     this->cur_model = this->models[cur_idx];
+    printf("- Model#%d is selected\n", cur_idx + 1);
 }
 
 void ModelView::loadNextModel()

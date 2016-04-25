@@ -25,6 +25,7 @@
 # define NEG_Y_KEY         'K'
 # define POS_Z_KEY         'M'
 # define NEG_Z_KEY         'O'
+# define RESET_WORLD_KEY   'Q'
 # define HELP_DOC_KEY      'H'
 #endif
 
@@ -37,6 +38,50 @@ static std::map<char, const char*> mode_desc = {
     { MODE_TRANS_KEY,  "Translate Mode" },
     { MODE_SCALE_KEY,  "Scale Mode" },
 };
+
+static std::string doc = "##############################################################\n"
+    "*                          Help doc                          *\n"
+    "***          All commands are case-insensitive             ***\n"
+    "##############################################################\n\n"
+    "Controls: \n"
+    "-\tT : Translate Mode\n"
+    "-\tR : Rotate Mode\n"
+    "-\tS : Scale Mode\n"
+    "-\tE : Camera(Eye) Mode\n"
+    "-\tP : Toggle parallel/perspective projection Mode\n\n"
+    "-\tQ : Reset model(s)\n"
+    "-\tG : Toggle gallery/single model Mode (testing)\n"
+    "-\tW : Toggle wireframe/solid Mode\n\n"
+    "-\tH : Help menu\n\n"
+    "Operations: \n"
+    "-\tL / J: positive X / negative X\n"
+    "-\tI / K: positive Y / negative Y\n"
+    "-\tM / O: positive Z / negative Z\n\n"
+    "-\tX : Select(Focus) next model\n"
+    "-\tZ : Select(Focus) previous model\n"
+    "-\t->: Next model(s)\n"
+    "-\t<-: Previous model(s)\n"
+    "-\tScroll: scale up/down model\n"
+    "-\tLeft Drag: translation on model\n"
+    "";
+
+const Matrix4 P_paral = Matrix4(
+    1, 0,  0, 0,
+    0, 1,  0, 0,
+    0, 0, -1, 0,
+    0, 0,  0, 1);
+const Matrix4 P_ortho = Matrix4(
+    2 * znear / (right - left), 0, (right + left) / (right - left), 0,
+    0, 2 * znear / (top - bottom), (top + bottom) / (top - bottom), 0,
+    0, 0, -(zfar + znear) / (zfar - znear), -2 * zfar * znear / (zfar - znear),
+    0, 0, -1, 0);
+const Matrix4 V_paral;
+const Matrix4 V_ortho = Matrix4(
+    1, 0, 0,  0,
+    0, 1, 0,  0,
+    0, 0, 1, -2,
+    0, 0, 0,  1);
+
 
 void onIdle();
 
