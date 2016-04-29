@@ -13,7 +13,8 @@
   <ItemGroup>
     <ClCompile Include="events.cpp" />
     <ClCompile Include="glm.c" />
-    <ClCompile Include="graphics.cpp" />
+    <ClCompile Include="model.cpp" />
+    <ClCompile Include="viewer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Matrices.cpp" />
     <ClCompile Include="shaders.cpp" />
