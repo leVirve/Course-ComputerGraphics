@@ -16,18 +16,21 @@ public:
 
     ~Model();
 
-    void load();
-    void arrange_array(int n);
-
-    GLMmodel* normalize(GLMmodel* m);
-
-    GLMmodel* body;
+    Matrix4 t, s, r, n;
     GLfloat* vertices;
     GLfloat* normals;
-
-    Matrix4 t, s, r, n;
-
     int size;
+
+private:
+
+    void load_to_buffer();
+
+    void arrange_array(int n);
+
+    Matrix4 get_normalize_matix(GLMmodel* m);
+
+    GLMmodel* body;
+
     int capacity;
 };
 

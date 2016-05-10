@@ -4,10 +4,14 @@
 Model::Model(const char* filename)
 {
     this->vertices = this->normals = NULL;
-    this->size = 0;
-    this->body = this->normalize(glmReadOBJ((char*)filename));
-    this->arrange_array(50000);
-    this->load();
+    this->size = this->capacity = 0;
+    this->body = glmReadOBJ((char*) filename);
+    
+    glmFacetNormals(this->body);
+    glmVertexNormals(this->body, 90.0);
+
+    this->n = get_normalize_matix(this->body);
+    this->load_to_buffer();
 }
 
 Model::~Model()
@@ -17,10 +21,11 @@ Model::~Model()
     if (this->body != NULL) glmDelete(this->body);
 }
 
-GLMmodel* Model::normalize(GLMmodel* m)
+Matrix4 Model::get_normalize_matix(GLMmodel* m)
 {
     GLfloat scale = 0, len;
     Vector3 centroid;
+    Matrix4 _t, _s;
 
     for (int k = 0; k < 3; ++k) {
         GLfloat max = -FLT_MAX, min = FLT_MAX;
@@ -36,15 +41,13 @@ GLMmodel* Model::normalize(GLMmodel* m)
         m->position[k] = 0;
     }
 
-    Matrix4 _t, _s;
     _t.translate(-centroid / scale);
     _s.scale(1 / scale);
-    this->n = _t * _s;
 
-    return m;
+    return _t * _s;
 }
 
-void Model::load()
+void Model::load_to_buffer()
 {
     this->size = body->numtriangles * 3;
     if (size > capacity) arrange_array(this->size);
