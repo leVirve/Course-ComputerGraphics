@@ -11,23 +11,23 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\common\glm.c" />
+    <ClCompile Include="..\common\Matrices.cpp" />
     <ClCompile Include="events.cpp" />
-    <ClCompile Include="glm.c" />
     <ClCompile Include="model.cpp" />
     <ClCompile Include="viewer.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Matrices.cpp" />
     <ClCompile Include="shaders.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\common\dirent.h" />
+    <ClInclude Include="..\common\glm.h" />
+    <ClInclude Include="..\common\Matrices.h" />
+    <ClInclude Include="..\common\Vectors.h" />
     <ClInclude Include="cg.h" />
-    <ClInclude Include="dirent.h" />
     <ClInclude Include="events.h" />
-    <ClInclude Include="glm.h" />
     <ClInclude Include="graphics.h" />
-    <ClInclude Include="Matrices.h" />
     <ClInclude Include="shaders.h" />
-    <ClInclude Include="Vectors.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shader.frag" />
@@ -94,7 +94,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(projectDir)\..\..\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(projectDir)\..\..\include;$(projectDir)\..\common</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

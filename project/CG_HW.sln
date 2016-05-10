@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CG_HW", "CG_HW\CG_HW.vcxproj", "{7480F627-D15A-408F-AF68-604E9F94C09D}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "work1", "work1\work1.vcxproj", "{7480F627-D15A-408F-AF68-604E9F94C09D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
