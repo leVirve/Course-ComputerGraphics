@@ -7,7 +7,7 @@ ModelView::ModelView(std::string folder)
     this->findAllModels(this->folder.c_str(), 0);
     this->index = this->cur_idx = 0;
     this->size = filenames.size();
-    this->gallery_size = max_models;
+    this->gallery_size = 1; // max_models;
 }
 
 void ModelView::loadOBJ()
@@ -89,6 +89,12 @@ void ModelView::loadNextModel()
 void ModelView::loadPrevModel()
 {
     this->index = (size + index - 1) % size;
+    this->loadOBJ();
+}
+
+void ModelView::toggleGallery()
+{
+    this->gallery_size = gallery_size == 4 ? 1 : 4;
     this->loadOBJ();
 }
 

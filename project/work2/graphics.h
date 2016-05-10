@@ -42,6 +42,8 @@ public:
 
     void toggleSolid();
 
+    void toggleGallery();
+
     void loadNextModel();
 
     void loadPrevModel();

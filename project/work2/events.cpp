@@ -104,9 +104,7 @@ void onKeyboard(unsigned char key, int x, int y)
     case CH_PROJ_KEY:
         proj_mode = proj_mode ? 0 : 1; break;
     case MODE_GALLERY_KEY:
-        // TODO: should do some deep works, pottential mem bug (from init=1 to 4)
-        // reload as toggle mode
-        mv.gallery_size = mv.gallery_size == 4 ? 1 : 4; break;
+        mv.toggleGallery(); break;
     case SELECT_NEXT_KEY:
         mv.selectNextModel(); break;
     case SELECT_PREV_KEY:
