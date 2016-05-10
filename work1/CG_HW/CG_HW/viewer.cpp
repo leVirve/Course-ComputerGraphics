@@ -14,7 +14,7 @@ void ModelView::loadOBJ()
 {
     char title[1024];
     _snprintf(
-        title, 1024, "(%d~%d/%d) %s - 10420 CS550000 CG HW1 Salas",
+        title, 1024, "(%d~%d/%d) %s - 10420 CS550000 CG HW Salas",
         index + 1, (index + gallery_size) % size, size, filenames[index].c_str());
     glutSetWindowTitle(title);
 
