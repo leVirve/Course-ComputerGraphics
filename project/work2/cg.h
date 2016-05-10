@@ -22,5 +22,5 @@
 
 
 extern GLint iLocPosition;
-extern GLint iLocColor;
+extern GLint iLocNormal;
 extern GLint iLocMVP;

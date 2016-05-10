@@ -38,7 +38,7 @@ void onDisplay(void)
     glPolygonMode(GL_FRONT_AND_BACK, mode);
 
     glEnableVertexAttribArray(iLocPosition);
-    glEnableVertexAttribArray(iLocColor);
+    glEnableVertexAttribArray(iLocNormal);
 
     Matrix4 v;
     if (proj_mode)
@@ -52,7 +52,7 @@ void onDisplay(void)
         Matrix4 mvp = MVP * mv.models[i]->t * mv.models[i]->s * mv.models[i]->r * mv.models[i]->n;
         mvp.transpose();
         glVertexAttribPointer(iLocPosition, 3, GL_FLOAT, GL_FALSE, 0, mv.models[i]->vertices);
-        glVertexAttribPointer(iLocColor, 3, GL_FLOAT, GL_FALSE, 0, mv.models[i]->colors);
+        glVertexAttribPointer(iLocNormal, 3, GL_FLOAT, GL_FALSE, 0, mv.models[i]->normals);
         glUniformMatrix4fv(iLocMVP, 1, GL_FALSE, mvp.get());
 
         glDrawArrays(GL_TRIANGLES, 0, mv.models[i]->size);

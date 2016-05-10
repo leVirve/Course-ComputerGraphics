@@ -61,7 +61,7 @@ void setShaders()
     glLinkProgram(p);
 
     iLocPosition = glGetAttribLocation(p, "av4position");
-    iLocColor = glGetAttribLocation(p, "av3color");
+    iLocNormal = glGetAttribLocation(p, "av3color");
     iLocMVP = glGetUniformLocation(p, "mvp");
 
     glUseProgram(p);

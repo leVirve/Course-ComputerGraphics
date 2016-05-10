@@ -3,7 +3,7 @@
 
 Model::Model(const char* filename)
 {
-    this->vertices = this->colors = NULL;
+    this->vertices = this->normals = NULL;
     this->size = 0;
     this->body = this->normalize(glmReadOBJ((char*)filename));
     this->arrange_array(50000);
@@ -13,7 +13,7 @@ Model::Model(const char* filename)
 Model::~Model()
 {
     if (this->vertices != NULL) free(this->vertices);
-    if (this->colors != NULL) free(this->colors);
+    if (this->normals != NULL) free(this->normals);
     if (this->body != NULL) glmDelete(this->body);
 }
 
@@ -54,7 +54,7 @@ void Model::load()
             int idx = body->triangles[k].vindices[i];
             for (int dim = 0; dim < 3; ++dim) {
                 this->vertices[(3 * k + i) * 3 + dim] = body->vertices[idx * 3 + dim];
-                this->colors[(3 * k + i) * 3 + dim] = body->colors[idx * 3 + dim];
+                this->normals[(3 * k + i) * 3 + dim] = body->normals[idx * 3 + dim];
             }
         }
     }
@@ -63,8 +63,8 @@ void Model::load()
 void Model::arrange_array(int n)
 {
     if (vertices != NULL) free(vertices);
-    if (colors != NULL) free(colors);
+    if (normals != NULL) free(normals);
     this->vertices = (GLfloat*)malloc(sizeof(GLfloat) * 3 * n);
-    this->colors = (GLfloat*)malloc(sizeof(GLfloat) * 3 * n);
+    this->normals = (GLfloat*)malloc(sizeof(GLfloat) * 3 * n);
     this->capacity = n;
 }

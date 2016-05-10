@@ -9,10 +9,10 @@ using namespace std;
 
 // Shader attributes
 GLint iLocPosition;
-GLint iLocColor;
+GLint iLocNormal;
 GLint iLocMVP;
 
-ModelView mv("./ColorModels");
+ModelView mv("./NormalModels");
 
 
 int main(int argc, char **argv)

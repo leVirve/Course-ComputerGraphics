@@ -23,7 +23,7 @@ public:
 
     GLMmodel* body;
     GLfloat* vertices;
-    GLfloat* colors;
+    GLfloat* normals;
 
     Matrix4 t, s, r, n;
 

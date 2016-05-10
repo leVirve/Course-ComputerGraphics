@@ -53,6 +53,7 @@ void ModelView::findAllModels(const char *name, int level)
             this->findAllModels(path, level + 1);
         }
         else {
+            if (strstr(entry->d_name, ".mtl")) continue;
             this->filenames.push_back(path);
             printf("%*s- <loaded> %s\n", level * 2, "", entry->d_name);
         }
