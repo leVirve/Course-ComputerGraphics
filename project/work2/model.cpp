@@ -17,7 +17,7 @@ Model::~Model()
 }
 
 GLMmodel* Model::get_obj_model(const char* filename)
-{    
+{
     GLMmodel* m = glmReadOBJ((char*) filename);
     glmFacetNormals(m);
     glmVertexNormals(m, 90.0);
@@ -77,5 +77,22 @@ void Model::load_to_buffer()
             }
         }
         g_id++;
+    }
+}
+
+void Model::draw_buffer()
+{
+    for (int i = 0; i < num_groups; ++i) {
+
+        glVertexAttribPointer(iLocPosition, 3, GL_FLOAT, GL_FALSE, 0, groups[i].vertices);
+        glVertexAttribPointer(iLocNormal, 3, GL_FLOAT, GL_FALSE, 0, groups[i].normals);
+
+        glUniform4fv(iLocMaterial.ambient, 1, groups[i].material.ambient);
+        glUniform4fv(iLocMaterial.diffuse, 1, groups[i].material.diffuse);
+        glUniform4fv(iLocMaterial.specular, 1, groups[i].material.specular);
+        glUniform1f(iLocMaterial.shininess, groups[i].material.shininess);
+
+        glDrawArrays(GL_TRIANGLES, 0, groups[i].num_points);
+
     }
 }

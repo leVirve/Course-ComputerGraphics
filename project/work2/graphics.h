@@ -37,6 +37,8 @@ public:
 
     int num_groups;
 
+    void draw_buffer();
+
 private:
 
     void load_to_buffer();
