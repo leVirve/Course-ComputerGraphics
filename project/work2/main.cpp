@@ -9,8 +9,13 @@ using namespace std;
 
 // Shader attributes
 GLint iLocPosition;
-GLint iLocNormal;
 GLint iLocMVP;
+GLint iLocNormal;
+GLint iLocModelTrans;
+GLint iLocViewTrans;
+GLint iLocEyePos;
+iLoc iLocMaterial;
+iLoc iLocLight[3];
 
 ModelView mv("./NormalModels");
 
@@ -46,7 +51,7 @@ int main(int argc, char **argv)
     glutMotionFunc  (onMouseMotion);
     glutReshapeFunc (onWindowReshape);
 
-    // set up shaders here
+    setLightingSource();
     setShaders();
 
     glEnable(GL_DEPTH_TEST);

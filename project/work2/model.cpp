@@ -5,12 +5,7 @@ Model::Model(const char* filename)
 {
     this->vertices = this->normals = NULL;
     this->size = this->capacity = 0;
-    this->body = glmReadOBJ((char*) filename);
-    
-    glmFacetNormals(this->body);
-    glmVertexNormals(this->body, 90.0);
-
-    this->n = get_normalize_matix(this->body);
+    this->body = get_obj_model(filename);
     this->load_to_buffer();
 }
 
@@ -19,6 +14,14 @@ Model::~Model()
     if (this->vertices != NULL) free(this->vertices);
     if (this->normals != NULL) free(this->normals);
     if (this->body != NULL) glmDelete(this->body);
+}
+
+GLMmodel* Model::get_obj_model(const char* filename)
+{    
+    GLMmodel* m = glmReadOBJ((char*) filename);
+    glmFacetNormals(m);
+    glmVertexNormals(m, 90.0);
+    return m;
 }
 
 Matrix4 Model::get_normalize_matix(GLMmodel* m)
@@ -54,10 +57,11 @@ void Model::load_to_buffer()
 
     for (unsigned int k = 0; k < body->numtriangles; ++k) {
         for (int i = 0; i < 3; ++i) {
-            int idx = body->triangles[k].vindices[i];
+            int v_idx = body->triangles[k].vindices[i];
+            int n_idx = body->triangles[k].nindices[i];
             for (int dim = 0; dim < 3; ++dim) {
-                this->vertices[(3 * k + i) * 3 + dim] = body->vertices[idx * 3 + dim];
-                this->normals[(3 * k + i) * 3 + dim] = body->normals[idx * 3 + dim];
+                this->vertices[(3 * k + i) * 3 + dim] = body->vertices[v_idx * 3 + dim];
+                this->normals[(3 * k + i) * 3 + dim] = body->normals[n_idx * 3 + dim];
             }
         }
     }

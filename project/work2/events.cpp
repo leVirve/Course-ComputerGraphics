@@ -25,6 +25,7 @@ Matrix4 move_eye(float x, float y, float z)
 
 void onIdle()
 {
+    mv.cur_model->r.rotateY(0.1);
     glutPostRedisplay();
 }
 
@@ -40,6 +41,20 @@ void onDisplay(void)
     glEnableVertexAttribArray(iLocPosition);
     glEnableVertexAttribArray(iLocNormal);
 
+    static GLfloat ambient[]={0.500000, 0.500000, 0.500000};
+    static GLfloat diffuse[]={0.784314, 0.470588, 0.752941};
+    static GLfloat specular[]={1,1,1};
+    static GLfloat shininess = 1.000000;
+
+    //pass model material value to the shader
+    glUniform4fv(iLocMaterial.ambient, 1, ambient);
+    glUniform4fv(iLocMaterial.diffuse, 1, diffuse);
+    glUniform4fv(iLocMaterial.specular, 1, specular);
+    glUniform1f(iLocMaterial.shininess, shininess);
+    
+    static GLfloat eye[]={0, 0, 0};
+    glVertexAttribPointer(iLocEyePos, 3, GL_FLOAT, GL_FALSE, 0, eye);
+
     Matrix4 v;
     if (proj_mode)
         { P = P_ortho; v = V_ortho; }
@@ -49,11 +64,13 @@ void onDisplay(void)
     Matrix4 MVP = P * v * V * M;
 
     for (int i = 0; i < mv.gallery_size; ++i) {
-        Matrix4 mvp = MVP * mv.models[i]->t * mv.models[i]->s * mv.models[i]->r * mv.models[i]->n;
-        mvp.transpose();
+        Matrix4 model_trans = mv.models[i]->t * mv.models[i]->s * mv.models[i]->r * mv.models[i]->n;
+        Matrix4 mvp = MVP * model_trans;
         glVertexAttribPointer(iLocPosition, 3, GL_FLOAT, GL_FALSE, 0, mv.models[i]->vertices);
         glVertexAttribPointer(iLocNormal, 3, GL_FLOAT, GL_FALSE, 0, mv.models[i]->normals);
-        glUniformMatrix4fv(iLocMVP, 1, GL_FALSE, mvp.get());
+        glUniformMatrix4fv(iLocMVP, 1, GL_FALSE, mvp.transpose().get());
+        glUniformMatrix4fv(iLocModelTrans, 1, GL_FALSE, model_trans.transpose().get());
+        glUniformMatrix4fv(iLocViewTrans, 1, GL_FALSE, (v * V).transpose().get());
 
         glDrawArrays(GL_TRIANGLES, 0, mv.models[i]->size);
     }

@@ -61,10 +61,31 @@ void setShaders()
     glLinkProgram(p);
 
     iLocPosition = glGetAttribLocation(p, "av4position");
-    iLocNormal = glGetAttribLocation(p, "av3color");
+    iLocNormal = glGetAttribLocation(p, "av3normal");
     iLocMVP = glGetUniformLocation(p, "mvp");
+    
+    iLocModelTrans = glGetUniformLocation(p, "model_transform");
+    iLocViewTrans = glGetUniformLocation(p, "view_transform");
+    iLocEyePos = glGetUniformLocation(p, "eye_position");
+
+    iLocMaterial.diffuse = glGetUniformLocation(p, "Material.diffuse");
+    iLocMaterial.ambient = glGetUniformLocation(p, "Material.ambient");
+    iLocMaterial.specular = glGetUniformLocation(p, "Material.specular");
+    iLocMaterial.shininess = glGetUniformLocation(p, "Material.shininess");
+    
+    iLocLight[0].ambient = glGetUniformLocation(p, "LightSource[0].ambient");
+    iLocLight[0].position = glGetUniformLocation(p, "LightSource[0].position");
+    iLocLight[0].diffuse = glGetUniformLocation(p, "LightSource[0].diffuse");
+    iLocLight[0].specular = glGetUniformLocation(p, "LightSource[0].specular");
+
+    iLocLight[1].position = glGetUniformLocation(p, "LightSource[1].position");
 
     glUseProgram(p);
+    
+    glUniform4fv(iLocLight[0].ambient, 1, lights[0].ambient);
+    glUniform4fv(iLocLight[0].diffuse, 1, lights[0].diffuse);
+    glUniform4fv(iLocLight[0].specular, 1, lights[0].specular);
+    glUniform4fv(iLocLight[0].position, 1, lights[0].position);
 }
 
 char *textFileRead(char *fn)

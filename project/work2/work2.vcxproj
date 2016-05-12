@@ -96,6 +96,7 @@
     <ClCompile Include="..\common\glm.c" />
     <ClCompile Include="..\common\Matrices.cpp" />
     <ClCompile Include="events.cpp" />
+    <ClCompile Include="lightings.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="model.cpp" />
     <ClCompile Include="shaders.cpp" />

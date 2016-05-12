@@ -16,6 +16,8 @@ public:
 
     ~Model();
 
+    GLMmodel * get_obj_model(const char * filename);
+
     Matrix4 t, s, r, n;
     GLfloat* vertices;
     GLfloat* normals;
@@ -79,3 +81,5 @@ private:
     std::vector<std::string> filenames;
 
 };
+
+void setLightingSource();

@@ -8,6 +8,7 @@ ModelView::ModelView(std::string folder)
     this->index = this->cur_idx = 0;
     this->size = filenames.size();
     this->gallery_size = 1; // max_models;
+    this->solid = true;
 }
 
 void ModelView::loadOBJ()
