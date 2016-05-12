@@ -67,7 +67,7 @@ void onDisplay(void)
         glUniformMatrix4fv(iLocModelTrans, 1, GL_FALSE, model_trans.get());
         glUniformMatrix4fv(iLocViewTrans, 1, GL_FALSE, view_trans.get());
 
-        mv.cur_model->draw_buffer();
+        mv.models[i]->draw_buffer();
     }
     glutSwapBuffers();
 }
