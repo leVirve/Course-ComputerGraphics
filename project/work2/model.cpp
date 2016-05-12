@@ -4,16 +4,16 @@
 Model::Model(const char* filename)
 {
     this->vertices = this->normals = NULL;
-    this->size = this->capacity = 0;
     this->body = get_obj_model(filename);
     this->load_to_buffer();
 }
 
 Model::~Model()
 {
-    if (this->vertices != NULL) free(this->vertices);
-    if (this->normals != NULL) free(this->normals);
-    if (this->body != NULL) glmDelete(this->body);
+    for (int i = 0; i < num_groups; ++i) {
+        delete groups[i].vertices;
+        delete groups[i].normals;
+    }
 }
 
 GLMmodel* Model::get_obj_model(const char* filename)
@@ -52,26 +52,30 @@ Matrix4 Model::get_normalize_matix(GLMmodel* m)
 
 void Model::load_to_buffer()
 {
-    this->size = body->numtriangles * 3;
-    if (size > capacity) arrange_array(this->size);
+    this->n = get_normalize_matix(this->body);
 
-    for (unsigned int k = 0; k < body->numtriangles; ++k) {
-        for (int i = 0; i < 3; ++i) {
-            int v_idx = body->triangles[k].vindices[i];
-            int n_idx = body->triangles[k].nindices[i];
-            for (int dim = 0; dim < 3; ++dim) {
-                this->vertices[(3 * k + i) * 3 + dim] = body->vertices[v_idx * 3 + dim];
-                this->normals[(3 * k + i) * 3 + dim] = body->normals[n_idx * 3 + dim];
+    int g_id = 0;
+    num_groups = body->numgroups;
+    groups = new SubModel[num_groups];
+
+    for (GLMgroup* g = body->groups; g; g = g->next) {
+        unsigned int num_points = g->numtriangles * points_per_triangle;
+        groups[g_id].num_points = num_points;
+        groups[g_id].vertices = new GLfloat[num_points * coords_per_point];
+        groups[g_id].normals = new GLfloat[num_points * coords_per_point];
+        groups[g_id].material = body->materials[g->material];
+
+        for (unsigned int k = 0; k < g->numtriangles; ++k) {
+            for (int i = 0; i < 3; ++i) {
+                int tri_id = g->triangles[k];
+                int v_idx = body->triangles[tri_id].vindices[i];
+                int n_idx = body->triangles[tri_id].nindices[i];
+                for (int dim = 0; dim < 3; ++dim) {
+                    groups[g_id].vertices[(3 * k + i) * 3 + dim] = body->vertices[v_idx * 3 + dim];
+                    groups[g_id].normals[(3 * k + i) * 3 + dim] = body->normals[n_idx * 3 + dim];
+                }
             }
         }
+        g_id++;
     }
-}
-
-void Model::arrange_array(int n)
-{
-    if (vertices != NULL) free(vertices);
-    if (normals != NULL) free(normals);
-    this->vertices = (GLfloat*)malloc(sizeof(GLfloat) * 3 * n);
-    this->normals = (GLfloat*)malloc(sizeof(GLfloat) * 3 * n);
-    this->capacity = n;
 }

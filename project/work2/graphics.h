@@ -7,6 +7,15 @@ const int right = 1, left = -1, top = 1, bottom = -1,
           znear = 1, zfar = 20;
 const int max_models = 4;
 
+const int points_per_triangle = 3;
+const int coords_per_point = 3;
+
+struct SubModel {
+    GLfloat *vertices, *normals;
+    GLMmaterial material;
+    unsigned int num_points;
+};
+
 
 class Model {
 
@@ -19,21 +28,23 @@ public:
     GLMmodel * get_obj_model(const char * filename);
 
     Matrix4 t, s, r, n;
+
     GLfloat* vertices;
+
     GLfloat* normals;
-    int size;
+
+    SubModel* groups;
+
+    int num_groups;
 
 private:
 
     void load_to_buffer();
 
-    void arrange_array(int n);
-
     Matrix4 get_normalize_matix(GLMmodel* m);
 
     GLMmodel* body;
 
-    int capacity;
 };
 
 
