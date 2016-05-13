@@ -48,7 +48,7 @@ void main() {
         vec3 model_position_camera = (ViewTrans * ModelTrans * Position).xyz;
         vec3 light_position_camera = (ViewTrans * LightSource[i].position).xyz;
 
-        vec3 N = normalize(transpose(inverse(ModelTrans)) * vec4(Normal, 0)).xyz;
+        vec3 N = normalize(transpose(inverse(ViewTrans * ModelTrans)) * vec4(Normal, 0)).xyz;
         vec3 L = normalize(light_position_camera);
         vec3 V = normalize(EyePosition - model_position_camera);
         vec3 H = normalize(L + V);
