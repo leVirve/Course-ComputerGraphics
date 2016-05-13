@@ -13,9 +13,21 @@ void setLightingSource()
     set(world.lights[0].diffuse, Vector4(0.6, 0.6, 0.6, 1));
     world.lights[0].constantAttenuation = 3;
     world.lights[0].spotExponent = 1;
-
-    set(world.lights[1].position, Vector4(0, 0, 5, 1));
-    set(world.lights[1].ambient, Vector4(0.1, 0.1, 0.1, 1));
+    world.lights[0].is_on = 1;
+    
+    set(world.lights[1].position, Vector4(2, 2, 2, 1));
+    set(world.lights[1].ambient, Vector4(0.3, 0.3, 0.3, 1));
     set(world.lights[1].diffuse, Vector4(0.6, 0.6, 0.6, 1));
     set(world.lights[1].specular, Vector4(0.6, 0.6, 0.6, 1));
+    world.lights[1].constantAttenuation = 3;
+    world.lights[1].spotExponent = 1;
+    world.lights[1].is_on = 0;
+
+    set(world.lights[1].position, Vector4(2, 2, 2, 1));
+    set(world.lights[1].ambient, Vector4(0.7, 0.3, 0.3, 1));
+    set(world.lights[1].diffuse, Vector4(0.6, 0.1, 0.6, 1));
+    set(world.lights[1].specular, Vector4(0.6, 0.1, 0.6, 1));
+    world.lights[1].constantAttenuation = 5;
+    world.lights[1].spotExponent = 1;
+    world.lights[1].is_on = 0;
 }

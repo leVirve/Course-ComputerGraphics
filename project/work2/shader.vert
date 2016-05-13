@@ -21,6 +21,7 @@ struct LightSourceParameters {
     float constantAttenuation;
     float linearAttenuation;
     float quadraticAttenuation;
+    int is_on;
 };
 
 struct MaterialParameters {
@@ -38,30 +39,39 @@ void main() {
 
     gl_Position = MVP * Position;
 
-    vec3 model_position_camera = (ViewTrans * ModelTrans * Position).xyz;
-    vec3 light_position_camera = (ViewTrans * LightSource[0].position).xyz;
+    vec4 r = vec4(0, 0, 0, 1);
 
-    vec3 N = normalize(transpose(inverse(ModelTrans)) * vec4(Normal, 0)).xyz;
-    vec3 L = normalize(light_position_camera);
-    vec3 V = normalize(EyePosition - model_position_camera);
-    vec3 H = normalize(L + V);
-    float attenuation = LightSource[0].constantAttenuation;
+    for (int i = 0; i < 3; ++i) {
 
-    /* Is directional light */
-    if (LightSource[0].position.w == 1) {
-        L = normalize(light_position_camera - model_position_camera);
+        if (LightSource[i].is_on == 0) continue;
 
-        float d = length(L);
-        attenuation = min(1, 1 / (
-            LightSource[0].constantAttenuation
-            + LightSource[0].linearAttenuation * d
-            + LightSource[0].quadraticAttenuation * d * d
-        ));
+        vec3 model_position_camera = (ViewTrans * ModelTrans * Position).xyz;
+        vec3 light_position_camera = (ViewTrans * LightSource[i].position).xyz;
+
+        vec3 N = normalize(transpose(inverse(ModelTrans)) * vec4(Normal, 0)).xyz;
+        vec3 L = normalize(light_position_camera);
+        vec3 V = normalize(EyePosition - model_position_camera);
+        vec3 H = normalize(L + V);
+        float attenuation = LightSource[i].constantAttenuation;
+
+        /* Is directional light */
+        if (LightSource[i].position.w == 1) {
+            L = normalize(light_position_camera - model_position_camera);
+
+            float d = length(L);
+            attenuation = min(1, 1 / (
+                LightSource[i].constantAttenuation
+                + LightSource[i].linearAttenuation * d
+                + LightSource[i].quadraticAttenuation * d * d
+            ));
+        }
+
+        vec4 ambient = Material.ambient * LightSource[i].ambient;
+        vec4 diffuse = Material.diffuse * LightSource[i].diffuse * max(dot(L, N), 0);
+        vec4 specular = Material.specular * LightSource[i].specular * pow(max(dot(H, N), 0), LightSource[i].spotExponent);
+
+        r += ambient + attenuation * (diffuse + specular);
     }
 
-    vec4 ambient = Material.ambient * LightSource[0].ambient;
-    vec4 diffuse = Material.diffuse * LightSource[0].diffuse * max(dot(L, N), 0);
-    vec4 specular = Material.specular * LightSource[0].specular * pow(max(dot(H, N), 0), LightSource[0].spotExponent);
-
-    vv4color = ambient + attenuation * (diffuse + specular);
+    vv4color = r;
 }

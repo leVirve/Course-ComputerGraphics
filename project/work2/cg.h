@@ -26,14 +26,18 @@ struct LightSource {
     float diffuse[4];
     float specular[4];
     float position[4];
-    float halfVector[4];
     float spotDirection[4];
     float spotExponent;
     float spotCutoff; // (range: [0.0,90.0], 180.0)
-    float spotCosCutoff; // (range: [1.0,0.0],-1.0)
     float constantAttenuation;
     float linearAttenuation;
     float quadraticAttenuation;
+    int is_on;
+
+    int toggle() {
+        is_on = is_on ? 0 : 1;
+        return is_on;
+    }
 };
 
 struct GLResource {
@@ -51,6 +55,7 @@ struct GLResource {
         GLint spotExponent;
         GLint spotCutoff;
         GLint spotCosCutoff;
+        GLint is_on;
     };
 
     GLint Position;
@@ -78,6 +83,7 @@ public:
 
     void toggleSolid();
     void toggleGallery();
+    void toggleLight(int idx);
 
     void loadNextModel();
     void loadPrevModel();

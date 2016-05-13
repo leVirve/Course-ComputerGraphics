@@ -121,7 +121,9 @@ void onKeyboard(unsigned char key, int x, int y)
         world.selectNextModel(); break;
     case SELECT_PREV_KEY:
         world.selectPrevModel(); break;
-    case '1': case '2': case '3': break;
+    case '1': world.toggleLight(0); break;
+    case '2': world.toggleLight(1); break;
+    case '3': world.toggleLight(2); break;
     case RESET_WORLD_KEY:
         up = Vector3(0, 1, 0), eye = Vector3(0, 0, 0), center = Vector3(0, 0, -1);
         V = move_eye(0, 0, 0); break;

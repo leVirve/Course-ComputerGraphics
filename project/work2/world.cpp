@@ -105,6 +105,11 @@ void World::toggleSolid()
     this->solid = solid ? false : true;
 }
 
+void World::toggleLight(int idx)
+{
+    glUniform1i(world.R.LightSource[idx].is_on, lights[idx].toggle());
+}
+
 World::~World()
 {
     for (int i = 0; i < gallery_size; ++i) delete this->models[i];

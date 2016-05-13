@@ -76,28 +76,37 @@ void setShaders()
     GL_BIND(Material.ambient);
     GL_BIND(Material.diffuse);
     GL_BIND(Material.specular);
-    GL_BIND(LightSource[0].position);
-    GL_BIND(LightSource[0].ambient);
-    GL_BIND(LightSource[0].diffuse);
-    GL_BIND(LightSource[0].specular);
-    GL_BIND(LightSource[0].constantAttenuation);
-    GL_BIND(LightSource[0].linearAttenuation);
-    GL_BIND(LightSource[0].quadraticAttenuation);
-    GL_BIND(LightSource[0].spotDirection);
-    GL_BIND(LightSource[0].spotExponent);
-    GL_BIND(LightSource[0].spotCutoff);
-    GL_BIND(LightSource[0].spotCosCutoff);
+#define GL_LIGHT_BIND(i) \
+    GL_BIND(LightSource[i].position);  \
+    GL_BIND(LightSource[i].ambient);  \
+    GL_BIND(LightSource[i].diffuse);  \
+    GL_BIND(LightSource[i].specular);  \
+    GL_BIND(LightSource[i].constantAttenuation);  \
+    GL_BIND(LightSource[i].linearAttenuation);  \
+    GL_BIND(LightSource[i].quadraticAttenuation);  \
+    GL_BIND(LightSource[i].spotDirection);  \
+    GL_BIND(LightSource[i].spotExponent);  \
+    GL_BIND(LightSource[i].spotCutoff);  \
+    GL_BIND(LightSource[i].spotCosCutoff);  \
+    GL_BIND(LightSource[i].is_on);
+    GL_LIGHT_BIND(0);
+    GL_LIGHT_BIND(1);
+    GL_LIGHT_BIND(2);
+#undef GL_LIGHT_BIND
 #undef GL_BIND
 
     glUseProgram(p);
 
     /* Default light source */
-    glUniform4fv(world.R.LightSource[0].ambient, 1, world.lights[0].ambient);
-    glUniform4fv(world.R.LightSource[0].diffuse, 1, world.lights[0].diffuse);
-    glUniform4fv(world.R.LightSource[0].specular, 1, world.lights[0].specular);
-    glUniform4fv(world.R.LightSource[0].position, 1, world.lights[0].position);
-    glUniform1f(world.R.LightSource[0].spotExponent, world.lights[0].spotExponent);
-    glUniform1f(world.R.LightSource[0].constantAttenuation, world.lights[0].constantAttenuation);
+    for (int i = 0; i < 3; ++i) {
+        glUniform4fv(world.R.LightSource[i].ambient, 1, world.lights[i].ambient);
+        glUniform4fv(world.R.LightSource[i].diffuse, 1, world.lights[i].diffuse);
+        glUniform4fv(world.R.LightSource[i].specular, 1, world.lights[i].specular);
+        glUniform4fv(world.R.LightSource[i].position, 1, world.lights[i].position);
+        glUniform1f(world.R.LightSource[i].spotExponent, world.lights[i].spotExponent);
+        glUniform1f(world.R.LightSource[i].constantAttenuation, world.lights[i].constantAttenuation);
+        glUniform1i(world.R.LightSource[i].is_on, world.lights[i].is_on);
+    }
 }
 
 char *textFileRead(char *fn)
