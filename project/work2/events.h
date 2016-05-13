@@ -29,8 +29,6 @@
 # define HELP_DOC_KEY      'H'
 #endif
 
-extern ModelView mv;
-
 
 static std::map<char, const char*> mode_desc = {
     { MODE_EYE_KEY,    "Eye Mode" },
@@ -64,23 +62,6 @@ static std::string doc = "######################################################
     "-\tScroll: scale up/down model\n"
     "-\tLeft Drag: translation on model\n"
     "";
-
-const Matrix4 P_paral = Matrix4(
-    1, 0,  0, 0,
-    0, 1,  0, 0,
-    0, 0, -1, 0,
-    0, 0,  0, 1);
-const Matrix4 P_ortho = Matrix4(
-    2 * znear / (right - left), 0, (right + left) / (right - left), 0,
-    0, 2 * znear / (top - bottom), (top + bottom) / (top - bottom), 0,
-    0, 0, -(zfar + znear) / (zfar - znear), -2 * zfar * znear / (zfar - znear),
-    0, 0, -1, 0);
-const Matrix4 V_paral;
-const Matrix4 V_ortho = Matrix4(
-    1, 0, 0,  0,
-    0, 1, 0,  0,
-    0, 0, 1, -2,
-    0, 0, 0,  1);
 
 
 void onIdle();

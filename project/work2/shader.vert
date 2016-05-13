@@ -1,12 +1,12 @@
-attribute vec4 av4position;
-attribute vec3 av3normal;
-attribute vec3 eye_position;
+attribute vec4 Position;
+attribute vec3 Normal;
+attribute vec3 EyePosition;
 
 varying vec4 vv4color;
 
-uniform mat4 mvp;
-uniform mat4 view_transform;
-uniform mat4 model_transform;
+uniform mat4 MVP;
+uniform mat4 ViewTrans;
+uniform mat4 ModelTrans;
 
 struct LightSourceParameters {
     vec4 ambient;
@@ -33,21 +33,35 @@ struct MaterialParameters {
 uniform MaterialParameters Material;
 uniform LightSourceParameters LightSource[3];
 
+
 void main() {
 
-    vec3 position_world = (model_transform * av4position).xyz;
-    vec3 position_camera = (view_transform * model_transform * av4position).xyz;
+    gl_Position = MVP * Position;
 
-    vec3 eye_vec = normalize(eye_position - position_camera);
-    vec3 light_camera = (view_transform * LightSource[0].position).xyz;
-    vec3 light_vec = normalize(light_camera + eye_vec);
+    vec3 model_position_camera = (ViewTrans * ModelTrans * Position).xyz;
+    vec3 light_position_camera = (ViewTrans * LightSource[0].position).xyz;
 
-    vec3 normal = normalize(transpose(inverse(model_transform)) * vec4(av3normal, 0)).xyz;
+    vec3 N = normalize(transpose(inverse(ModelTrans)) * vec4(Normal, 0)).xyz;
+    vec3 L = normalize(light_position_camera);
+    vec3 V = normalize(EyePosition - model_position_camera);
+    vec3 H = normalize(L + V);
+    float attenuation = LightSource[0].constantAttenuation;
 
-    vec4 vv4ambient_D = Material.ambient * LightSource[0].ambient;
-    vec4 vv4diffuse_D = Material.diffuse * LightSource[0].diffuse * max(dot(normal, light_vec), 0);
-    vec4 vv4specular_D = Material.specular * LightSource[0].specular * max(dot(normalize(light_vec + eye_vec), normal), 0);
-    vv4color = vv4ambient_D + vv4diffuse_D + vv4specular_D;
+    /* Is directional light */
+    if (LightSource[0].position.w == 1) {
+        L = normalize(light_position_camera - model_position_camera);
 
-    gl_Position = mvp * av4position;
+        float d = length(L);
+        attenuation = min(1, 1 / (
+            LightSource[0].constantAttenuation
+            + LightSource[0].linearAttenuation * d
+            + LightSource[0].quadraticAttenuation * d * d
+        ));
+    }
+
+    vec4 ambient = Material.ambient * LightSource[0].ambient;
+    vec4 diffuse = Material.diffuse * LightSource[0].diffuse * max(dot(L, N), 0);
+    vec4 specular = Material.specular * LightSource[0].specular * pow(max(dot(H, N), 0), LightSource[0].spotExponent);
+
+    vv4color = ambient + attenuation * (diffuse + specular);
 }

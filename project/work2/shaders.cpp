@@ -60,32 +60,44 @@ void setShaders()
     // link program
     glLinkProgram(p);
 
-    iLocPosition = glGetAttribLocation(p, "av4position");
-    iLocNormal = glGetAttribLocation(p, "av3normal");
-    iLocMVP = glGetUniformLocation(p, "mvp");
-    
-    iLocModelTrans = glGetUniformLocation(p, "model_transform");
-    iLocViewTrans = glGetUniformLocation(p, "view_transform");
-    iLocEyePos = glGetUniformLocation(p, "eye_position");
+#define GL_BIND(X)  \
+    world.R.X = glGetAttribLocation(p, #X)
+    GL_BIND(Position);
+    GL_BIND(Normal);
+#undef GL_BIND
 
-    iLocMaterial.diffuse = glGetUniformLocation(p, "Material.diffuse");
-    iLocMaterial.ambient = glGetUniformLocation(p, "Material.ambient");
-    iLocMaterial.specular = glGetUniformLocation(p, "Material.specular");
-    iLocMaterial.shininess = glGetUniformLocation(p, "Material.shininess");
-    
-    iLocLight[0].ambient = glGetUniformLocation(p, "LightSource[0].ambient");
-    iLocLight[0].position = glGetUniformLocation(p, "LightSource[0].position");
-    iLocLight[0].diffuse = glGetUniformLocation(p, "LightSource[0].diffuse");
-    iLocLight[0].specular = glGetUniformLocation(p, "LightSource[0].specular");
-
-    iLocLight[1].position = glGetUniformLocation(p, "LightSource[1].position");
+#define GL_BIND(X)  \
+    world.R.X = glGetUniformLocation(p, #X)
+    GL_BIND(MVP);
+    GL_BIND(ModelTrans);
+    GL_BIND(ViewTrans);
+    GL_BIND(EyePosition);
+    GL_BIND(Material.position);
+    GL_BIND(Material.ambient);
+    GL_BIND(Material.diffuse);
+    GL_BIND(Material.specular);
+    GL_BIND(LightSource[0].position);
+    GL_BIND(LightSource[0].ambient);
+    GL_BIND(LightSource[0].diffuse);
+    GL_BIND(LightSource[0].specular);
+    GL_BIND(LightSource[0].constantAttenuation);
+    GL_BIND(LightSource[0].linearAttenuation);
+    GL_BIND(LightSource[0].quadraticAttenuation);
+    GL_BIND(LightSource[0].spotDirection);
+    GL_BIND(LightSource[0].spotExponent);
+    GL_BIND(LightSource[0].spotCutoff);
+    GL_BIND(LightSource[0].spotCosCutoff);
+#undef GL_BIND
 
     glUseProgram(p);
-    
-    glUniform4fv(iLocLight[0].ambient, 1, lights[0].ambient);
-    glUniform4fv(iLocLight[0].diffuse, 1, lights[0].diffuse);
-    glUniform4fv(iLocLight[0].specular, 1, lights[0].specular);
-    glUniform4fv(iLocLight[0].position, 1, lights[0].position);
+
+    /* Default light source */
+    glUniform4fv(world.R.LightSource[0].ambient, 1, world.lights[0].ambient);
+    glUniform4fv(world.R.LightSource[0].diffuse, 1, world.lights[0].diffuse);
+    glUniform4fv(world.R.LightSource[0].specular, 1, world.lights[0].specular);
+    glUniform4fv(world.R.LightSource[0].position, 1, world.lights[0].position);
+    glUniform1f(world.R.LightSource[0].spotExponent, world.lights[0].spotExponent);
+    glUniform1f(world.R.LightSource[0].constantAttenuation, world.lights[0].constantAttenuation);
 }
 
 char *textFileRead(char *fn)

@@ -25,24 +25,24 @@ Matrix4 move_eye(float x, float y, float z)
 
 void onIdle()
 {
-    mv.cur_model->r.rotateY(0.1);
+    world.cur_model->r.rotateY(0.1);
     glutPostRedisplay();
 }
 
 void onDisplay(void)
 {
-    unsigned int mode = mv.solid ? GL_FILL : GL_LINE;
+    unsigned int mode = world.solid ? GL_FILL : GL_LINE;
 
     // clear canvas
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glPolygonMode(GL_FRONT_AND_BACK, mode);
 
-    glEnableVertexAttribArray(iLocPosition);
-    glEnableVertexAttribArray(iLocNormal);
+    glEnableVertexAttribArray(world.R.Position);
+    glEnableVertexAttribArray(world.R.Normal);
 
     static GLfloat eye[]={0, 0, 0};
-    glVertexAttribPointer(iLocEyePos, 3, GL_FLOAT, GL_FALSE, 0, eye);
+    glVertexAttribPointer(world.R.EyePosition, 3, GL_FLOAT, GL_FALSE, 0, eye);
 
     Matrix4 v;
     if (proj_mode)
@@ -52,22 +52,22 @@ void onDisplay(void)
 
     Matrix4 MVP = P * v * V * M;
 
-    for (int i = 0; i < mv.gallery_size; ++i) {
+    for (int i = 0; i < world.gallery_size; ++i) {
 
         Matrix4 model_trans = (
-            mv.models[i]->t
-            * mv.models[i]->s
-            * mv.models[i]->r
-            * mv.models[i]->n);
+            world.models[i]->t
+            * world.models[i]->s
+            * world.models[i]->r
+            * world.models[i]->n);
         Matrix4 view_trans = (v * V).transpose();
         Matrix4 mvp = (MVP * model_trans).transpose();
         model_trans.transpose();
 
-        glUniformMatrix4fv(iLocMVP, 1, GL_FALSE, mvp.get());
-        glUniformMatrix4fv(iLocModelTrans, 1, GL_FALSE, model_trans.get());
-        glUniformMatrix4fv(iLocViewTrans, 1, GL_FALSE, view_trans.get());
+        glUniformMatrix4fv(world.R.MVP, 1, GL_FALSE, mvp.get());
+        glUniformMatrix4fv(world.R.ModelTrans, 1, GL_FALSE, model_trans.get());
+        glUniformMatrix4fv(world.R.ViewTrans, 1, GL_FALSE, view_trans.get());
 
-        mv.models[i]->draw_buffer();
+        world.models[i]->draw_buffer();
     }
     glutSwapBuffers();
 }
@@ -79,8 +79,8 @@ void onMouse(int who, int state, int x, int y)
     case GLUT_LEFT_BUTTON:   break;
     case GLUT_MIDDLE_BUTTON: break;
     case GLUT_RIGHT_BUTTON:  break;
-    case GLUT_WHEEL_UP:      mv.cur_model->s.scale(1.01f); break;
-    case GLUT_WHEEL_DOWN:    mv.cur_model->s.scale(0.99f); break;
+    case GLUT_WHEEL_UP:      world.cur_model->s.scale(1.01f); break;
+    case GLUT_WHEEL_DOWN:    world.cur_model->s.scale(0.99f); break;
     default:
         printf("%18s(): (%d, %d) ", __FUNCTION__, x, y);
         printf("0x%02X          ", who);
@@ -97,7 +97,7 @@ void onMouse(int who, int state, int x, int y)
 void onMouseMotion(int x, int y)
 {
     float dx = (float) x - lastX, dy = (float) y - lastY;
-    mv.cur_model->t.translate(dx / 800, -dy / 800, 0);
+    world.cur_model->t.translate(dx / 800, -dy / 800, 0);
     lastX = x, lastY = y;
 }
 
@@ -112,15 +112,16 @@ void onKeyboard(unsigned char key, int x, int y)
         system("clear");
         std::cout << doc << "\n"; break;
     case CHANGE_MODE_KEY_W:
-        mv.toggleSolid(); break;
+        world.toggleSolid(); break;
     case CH_PROJ_KEY:
         proj_mode = proj_mode ? 0 : 1; break;
     case MODE_GALLERY_KEY:
-        mv.toggleGallery(); break;
+        world.toggleGallery(); break;
     case SELECT_NEXT_KEY:
-        mv.selectNextModel(); break;
+        world.selectNextModel(); break;
     case SELECT_PREV_KEY:
-        mv.selectPrevModel(); break;
+        world.selectPrevModel(); break;
+    case '1': case '2': case '3': break;
     case RESET_WORLD_KEY:
         up = Vector3(0, 1, 0), eye = Vector3(0, 0, 0), center = Vector3(0, 0, -1);
         V = move_eye(0, 0, 0); break;
@@ -131,54 +132,54 @@ void onKeyboard(unsigned char key, int x, int y)
         control_mode = k; printf("** In control mode: %s **\n", mode_desc[k]); break;
     case POS_X_KEY:
         switch (control_mode) {
-        case MODE_TRANS_KEY:  mv.cur_model->t.translate(0.1f, 0, 0); break;
-        case MODE_SCALE_KEY:  mv.cur_model->s.scale(1.01f, 1, 1); break;
-        case MODE_ROTATE_KEY: mv.cur_model->r.rotateX(1); break;
+        case MODE_TRANS_KEY:  world.cur_model->t.translate(0.1f, 0, 0); break;
+        case MODE_SCALE_KEY:  world.cur_model->s.scale(1.01f, 1, 1); break;
+        case MODE_ROTATE_KEY: world.cur_model->r.rotateX(1); break;
         case MODE_EYE_KEY:    V = move_eye(0.01f, 0, 0); break;
         default: break;
         }
         break;
     case NEG_X_KEY:
         switch (control_mode) {
-        case MODE_TRANS_KEY:  mv.cur_model->t.translate(-0.1f, 0, 0); break;
-        case MODE_SCALE_KEY:  mv.cur_model->s.scale(0.99f, 1, 1); break;
-        case MODE_ROTATE_KEY: mv.cur_model->r.rotateX(-1); break;
+        case MODE_TRANS_KEY:  world.cur_model->t.translate(-0.1f, 0, 0); break;
+        case MODE_SCALE_KEY:  world.cur_model->s.scale(0.99f, 1, 1); break;
+        case MODE_ROTATE_KEY: world.cur_model->r.rotateX(-1); break;
         case MODE_EYE_KEY:    V = move_eye(-0.01f, 0, 0); break;
         default: break;
         }
         break;
     case POS_Y_KEY:
         switch (control_mode) {
-        case MODE_TRANS_KEY:  mv.cur_model->t.translate(0, 0.1f, 0); break;
-        case MODE_SCALE_KEY:  mv.cur_model->s.scale(1, 1.01f, 1); break;
-        case MODE_ROTATE_KEY: mv.cur_model->r.rotateY(1); break;
+        case MODE_TRANS_KEY:  world.cur_model->t.translate(0, 0.1f, 0); break;
+        case MODE_SCALE_KEY:  world.cur_model->s.scale(1, 1.01f, 1); break;
+        case MODE_ROTATE_KEY: world.cur_model->r.rotateY(1); break;
         case MODE_EYE_KEY:    V = move_eye(0, 0.1f, 0); break;
         default: break;
         }
         break;
     case NEG_Y_KEY:
         switch (control_mode) {
-        case MODE_TRANS_KEY:  mv.cur_model->t.translate(0, -0.1f, 0); break;
-        case MODE_SCALE_KEY:  mv.cur_model->s.scale(1, 0.99f, 1); break;
-        case MODE_ROTATE_KEY: mv.cur_model->r.rotateY(-1); break;
+        case MODE_TRANS_KEY:  world.cur_model->t.translate(0, -0.1f, 0); break;
+        case MODE_SCALE_KEY:  world.cur_model->s.scale(1, 0.99f, 1); break;
+        case MODE_ROTATE_KEY: world.cur_model->r.rotateY(-1); break;
         case MODE_EYE_KEY:    V = move_eye(0, -0.1f, 0); break;
         default: break;
         }
         break;
     case POS_Z_KEY:
         switch (control_mode) {
-        case MODE_TRANS_KEY:  mv.cur_model->t.translate(0, 0, 0.1f); break;
-        case MODE_SCALE_KEY:  mv.cur_model->s.scale(1, 1, 1.01f); break;
-        case MODE_ROTATE_KEY: mv.cur_model->r.rotateZ(1); break;
+        case MODE_TRANS_KEY:  world.cur_model->t.translate(0, 0, 0.1f); break;
+        case MODE_SCALE_KEY:  world.cur_model->s.scale(1, 1, 1.01f); break;
+        case MODE_ROTATE_KEY: world.cur_model->r.rotateZ(1); break;
         case MODE_EYE_KEY:    V = move_eye(0, 0, 0.1f); break;
         default: break;
         }
         break;
     case NEG_Z_KEY:
         switch (control_mode) {
-        case MODE_TRANS_KEY:  mv.cur_model->t.translate(0, 0, -0.1f); break;
-        case MODE_SCALE_KEY:  mv.cur_model->s.scale(1, 1, 0.99f); break;
-        case MODE_ROTATE_KEY: mv.cur_model->r.rotateZ(-1); break;
+        case MODE_TRANS_KEY:  world.cur_model->t.translate(0, 0, -0.1f); break;
+        case MODE_SCALE_KEY:  world.cur_model->s.scale(1, 1, 0.99f); break;
+        case MODE_ROTATE_KEY: world.cur_model->r.rotateZ(-1); break;
         case MODE_EYE_KEY:    V = move_eye(0, 0, -0.1f); break;
         default: break;
         }
@@ -192,8 +193,8 @@ void onKeyboard(unsigned char key, int x, int y)
 void onKeyboardSpecial(int key, int x, int y) {
     switch (key)
     {
-    case GLUT_KEY_LEFT:  mv.loadPrevModel(); break;
-    case GLUT_KEY_RIGHT: mv.loadNextModel(); break;
+    case GLUT_KEY_LEFT:  world.loadPrevModel(); break;
+    case GLUT_KEY_RIGHT: world.loadNextModel(); break;
     default: break;
     }
 }

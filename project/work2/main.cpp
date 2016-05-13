@@ -5,19 +5,8 @@
 #pragma comment (lib, "glew32.lib")
 #pragma comment (lib, "freeglut.lib")
 
-using namespace std;
 
-// Shader attributes
-GLint iLocPosition;
-GLint iLocMVP;
-GLint iLocNormal;
-GLint iLocModelTrans;
-GLint iLocViewTrans;
-GLint iLocEyePos;
-iLoc iLocMaterial;
-iLoc iLocLight[3];
-
-ModelView mv("./NormalModels");
+World world("./NormalModels");
 
 
 int main(int argc, char **argv)
@@ -40,7 +29,7 @@ int main(int argc, char **argv)
         exit(1);
     }
 
-    mv.activate();
+    world.activate();
 
     // register glut callback functions
     glutDisplayFunc (onDisplay);

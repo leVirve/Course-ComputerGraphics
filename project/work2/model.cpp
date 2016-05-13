@@ -59,6 +59,7 @@ void Model::load_to_buffer()
     groups = new SubModel[num_groups];
 
     for (GLMgroup* g = body->groups; g; g = g->next) {
+ 
         unsigned int num_points = g->numtriangles * points_per_triangle;
         groups[g_id].num_points = num_points;
         groups[g_id].vertices = new GLfloat[num_points * coords_per_point];
@@ -77,6 +78,7 @@ void Model::load_to_buffer()
             }
         }
         g_id++;
+
     }
 }
 
@@ -84,15 +86,14 @@ void Model::draw_buffer()
 {
     for (int i = 0; i < num_groups; ++i) {
 
-        glVertexAttribPointer(iLocPosition, 3, GL_FLOAT, GL_FALSE, 0, groups[i].vertices);
-        glVertexAttribPointer(iLocNormal, 3, GL_FLOAT, GL_FALSE, 0, groups[i].normals);
+        glVertexAttribPointer(world.R.Position, 3, GL_FLOAT, GL_FALSE, 0, groups[i].vertices);
+        glVertexAttribPointer(world.R.Normal, 3, GL_FLOAT, GL_FALSE, 0, groups[i].normals);
 
-        glUniform4fv(iLocMaterial.ambient, 1, groups[i].material.ambient);
-        glUniform4fv(iLocMaterial.diffuse, 1, groups[i].material.diffuse);
-        glUniform4fv(iLocMaterial.specular, 1, groups[i].material.specular);
-        glUniform1f(iLocMaterial.shininess, groups[i].material.shininess);
+        glUniform4fv(world.R.Material.ambient, 1, groups[i].material.ambient);
+        glUniform4fv(world.R.Material.diffuse, 1, groups[i].material.diffuse);
+        glUniform4fv(world.R.Material.specular, 1, groups[i].material.specular);
+        glUniform1f(world.R.Material.shininess, groups[i].material.shininess);
 
         glDrawArrays(GL_TRIANGLES, 0, groups[i].num_points);
-
     }
 }

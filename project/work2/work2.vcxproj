@@ -100,7 +100,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="model.cpp" />
     <ClCompile Include="shaders.cpp" />
-    <ClCompile Include="viewer.cpp" />
+    <ClCompile Include="world.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shader.frag" />

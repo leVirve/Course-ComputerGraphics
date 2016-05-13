@@ -1,17 +1,18 @@
+#include "cg.h"
 #include "graphics.h"
 
 
-ModelView::ModelView(std::string folder)
+World::World(std::string folder)
 {
     this->folder = folder;
     this->findAllModels(this->folder.c_str(), 0);
     this->index = this->cur_idx = 0;
     this->size = filenames.size();
-    this->gallery_size = 1; // max_models;
+    this->gallery_size = 1;
     this->solid = true;
 }
 
-void ModelView::loadOBJ()
+void World::loadOBJ()
 {
     char title[1024];
     _snprintf(
@@ -34,7 +35,7 @@ void ModelView::loadOBJ()
     printf("- Model#%d is focused\n", cur_idx + 1);
 }
 
-void ModelView::findAllModels(const char *name, int level)
+void World::findAllModels(const char *name, int level)
 {
     DIR *dir;
     struct dirent *entry;
@@ -62,49 +63,49 @@ void ModelView::findAllModels(const char *name, int level)
     closedir(dir);
 }
 
-void ModelView::activate()
+void World::activate()
 {
     this->loadOBJ();
 }
 
-void ModelView::selectNextModel()
+void World::selectNextModel()
 {
     this->cur_idx = (cur_idx + 1) % max_models;
     this->cur_model = this->models[cur_idx];
     printf("- Model#%d is selected\n", cur_idx + 1);
 }
 
-void ModelView::selectPrevModel()
+void World::selectPrevModel()
 {
     this->cur_idx = (cur_idx + max_models - 1) % max_models;
     this->cur_model = this->models[cur_idx];
     printf("- Model#%d is selected\n", cur_idx + 1);
 }
 
-void ModelView::loadNextModel()
+void World::loadNextModel()
 {
     this->index = (index + 1) % size;
     this->loadOBJ();
 }
 
-void ModelView::loadPrevModel()
+void World::loadPrevModel()
 {
     this->index = (size + index - 1) % size;
     this->loadOBJ();
 }
 
-void ModelView::toggleGallery()
+void World::toggleGallery()
 {
     this->gallery_size = gallery_size == 4 ? 1 : 4;
     this->loadOBJ();
 }
 
-void ModelView::toggleSolid()
+void World::toggleSolid()
 {
     this->solid = solid ? false : true;
 }
 
-ModelView::~ModelView()
+World::~World()
 {
     for (int i = 0; i < gallery_size; ++i) delete this->models[i];
 }
