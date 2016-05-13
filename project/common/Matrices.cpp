@@ -433,6 +433,11 @@ Matrix4& Matrix4::scale(float s)
     return scale(s, s, s);
 }
 
+Matrix4& Matrix4::scale(const Vector3& v)
+{
+    return scale(v.x, v.y, v.z);
+}
+
 Matrix4& Matrix4::scale(float x, float y, float z)
 {
     m[0] = m[0]*x;   m[1] = m[1]*x;   m[2] = m[2]*x;   m[3] = m[3]*x;

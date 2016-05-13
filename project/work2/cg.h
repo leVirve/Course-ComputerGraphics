@@ -79,6 +79,8 @@ public:
     World(std::string folder);
     ~World();
 
+    void control(char k);
+
     void activate();
 
     void toggleSolid();
@@ -91,8 +93,13 @@ public:
     void selectNextModel();
     void selectPrevModel();
 
+    void move_camera(Vector3 & v);
+    void move_light(Vector3 & v);
+    void update_lights();
+
     bool solid;
     int gallery_size;
+    char control_mode;
     
     const static int max_models = 4;
     const static int max_lights = 3;
@@ -104,6 +111,10 @@ public:
     GLResource R;
 
     LightSource lights[max_lights];
+
+    Matrix4 P, V, M;
+
+    Vector3 up, eye, center;
 
 private:
 
@@ -151,6 +162,9 @@ const Matrix4 V_ortho =
         0, 0, 1, -2,
         0, 0, 0,  1
     );
+
+
+enum CONTROL_MODE { TRANSLATE = 'T', ROTATE = 'R', SCALE = 'S', EYE = 'E', LIGHT };
 
 
 extern LightSource lights[3];

@@ -176,6 +176,7 @@ public:
     Matrix4&    rotateY(float angle);                   // rotate on Y-axis with degree
     Matrix4&    rotateZ(float angle);                   // rotate on Z-axis with degree
     Matrix4&    scale(float scale);                     // uniform scale
+    Matrix4 &   scale(const Vector3 & v);
     Matrix4&    scale(float sx, float sy, float sz);    // scale by (sx, sy, sz) on each axis
 
     // operators
