@@ -1,9 +1,11 @@
 attribute vec4 Position;
 attribute vec3 Normal;
-attribute vec3 EyePosition;
 
 varying vec4 vv4color;
+varying vec4 vv4position;
 
+uniform int  Shading;
+uniform vec3 EyePosition;
 uniform mat4 MVP;
 uniform mat4 ViewTrans;
 uniform mat4 ModelTrans;
@@ -30,6 +32,7 @@ struct MaterialParameters {
     vec4 specular;
     float shininess;
 };
+// enum SHADING { GOURAUD, PHONE };
 
 uniform MaterialParameters Material;
 uniform LightSourceParameters LightSource[3];
@@ -39,16 +42,24 @@ void main() {
 
     gl_Position = MVP * Position;
 
+    if (Shading == 1) {
+        vv4color = vec4(Normal, 0);
+        vv4position = Position;
+        return;
+    }
+
     vec4 color = vec4(0, 0, 0, 1);
 
     for (int i = 0; i < 3; ++i) {
 
         if (LightSource[i].is_on == 0) continue;
 
+        vec4 ambient, diffuse, specular;
+
         vec3 model_position_camera = (ViewTrans * ModelTrans * Position).xyz;
         vec3 light_position_camera = (ViewTrans * LightSource[i].position).xyz;
 
-        vec3 N = normalize(transpose(inverse(ViewTrans * ModelTrans)) * vec4(Normal, 0)).xyz;
+        vec3 N = normalize((transpose(inverse(ModelTrans)) * vec4(Normal, 0)).xyz);
         vec3 L = normalize(light_position_camera);
         vec3 V = normalize(EyePosition - model_position_camera);
         vec3 H = normalize(L + V);
@@ -67,8 +78,8 @@ void main() {
 
             /* For Spotlight */
             if (LightSource[i].spotCutoff != 0) {
-                vec3 v = normalize(light_position_camera - model_position_camera);
-                vec3 dir = normalize(LightSource[i].spotDirection.xyz);
+                vec3 v = -L;
+                vec3 dir = normalize((transpose(inverse(ViewTrans)) * LightSource[i].spotDirection).xyz);
                 float theta = degrees(acos(dot(v, dir)));
                 if (theta < LightSource[i].spotCutoff) {
                     attenuation *= pow(max(dot(v, dir), 0), LightSource[i].spotExponent);
@@ -76,9 +87,14 @@ void main() {
             }
         }
 
-        vec4 ambient = Material.ambient * LightSource[i].ambient;
-        vec4 diffuse = Material.diffuse * LightSource[i].diffuse * max(dot(L, N), 0);
-        vec4 specular = Material.specular * LightSource[i].specular * pow(max(dot(H, N), 0), 0.87);
+        ambient = Material.ambient * LightSource[i].ambient;
+        diffuse = Material.diffuse * LightSource[i].diffuse * max(dot(L, N), 0);
+        if (dot(L, N) != 0.0) {
+            vec3 refVector = reflect(-L, N);
+            // specular = Material.specular * LightSource[i].specular * pow(max(dot(V, refVector), 0), 10);
+            // half way vector
+            specular = Material.specular * LightSource[i].specular * pow(max(dot(H, N), 0), 10);
+        }
 
         color += ambient + attenuation * (diffuse + specular);
     }

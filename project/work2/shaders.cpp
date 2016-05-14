@@ -11,6 +11,7 @@ void bindResources(GLint p)
 
 #define GL_BIND(X)  \
     world.R.X = glGetUniformLocation(p, #X)
+    GL_BIND(Shading);
     GL_BIND(MVP);
     GL_BIND(ModelTrans);
     GL_BIND(ViewTrans);

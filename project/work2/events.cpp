@@ -39,7 +39,7 @@ void onMouse(int who, int state, int x, int y)
 void onMouseMotion(int x, int y)
 {
     float dx = (float) x - lastX, dy = (float) y - lastY;
-    world.cur_model->t.translate(dx / 800, -dy / 800, 0);
+    world.cur_model->t.translate(dx / 600, -dy / 600, 0);
     lastX = x, lastY = y;
 }
 
@@ -62,6 +62,8 @@ void onKeyboard(unsigned char key, int x, int y)
     case LIGHT::POINTLIGHT:
     case LIGHT::SPOTLIGHT:
         world.toggle_light(k); break;
+    case LIGHT::SHADE:
+        world.toggle_shading(k); break;
     case CONTROL_MODE::TRANSLATE:
     case CONTROL_MODE::SCALE:
     case CONTROL_MODE::ROTATE:

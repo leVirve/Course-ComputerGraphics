@@ -30,6 +30,7 @@ World::World(std::string folder)
     this->solid = true;
     this->parallel_project = true;
     this->spin_display = false;
+    this->shading = SHADING::GOURAUD;
 
     this->setup_camera();
     this->setup_world_matrix();
@@ -102,7 +103,8 @@ void World::move_light(Vector3& v)
 
 void World::handle_spotlight(char k)
 {
-    lights[light_map[LIGHT::SPOTLIGHT]].spotCutoff += 0.1f;
+    float scale = k == SPOTLIGHT::INC ? 0.1f : -0.1f;
+    lights[light_map[LIGHT::SPOTLIGHT]].spotCutoff += scale;
     update_lights();
 }
 
@@ -149,7 +151,7 @@ void World::setup_world_matrix()
     pad_perspective = Matrix4(
         1, 0, 0,  0,
         0, 1, 0,  0,
-        0, 0, 1, -2.5,
+        0, 0, 1, -2,
         0, 0, 0,  1
     );
 }
@@ -201,6 +203,12 @@ void World::toggle_light(char k)
 {
     int idx = light_map[k];
     glUniform1i(world.R.LightSource[idx].is_on, lights[idx].toggle());
+}
+
+void World::toggle_shading(char k)
+{
+    this->shading = shading == SHADING::GOURAUD ? SHADING::PHONE : SHADING::GOURAUD;
+    glUniform1i(world.R.Shading, shading);
 }
 
 void World::load_obj()

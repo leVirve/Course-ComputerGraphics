@@ -58,6 +58,7 @@ struct GLResource {
         GLint is_on;
     };
 
+    GLint Shading;
     GLint Position;
     GLint MVP;
     GLint Normal;
@@ -68,9 +69,15 @@ struct GLResource {
     LightResource LightSource[3];
 };
 
-enum CONTROL_MODE { TRANSLATE = 'T', ROTATE = 'R', SCALE = 'S', EYE = 'E', LIGHT = 'D' };
-enum LIGHT { DIRECTIONAL='1', POINTLIGHT='2', SPOTLIGHT='3', PREV='7', NEXT='9' };
+enum CONTROL_MODE {
+    TRANSLATE = 'T', ROTATE = 'R', SCALE = 'S', EYE = 'E', LIGHT = 'D' };
+enum LIGHT {
+    DIRECTIONAL='1', POINTLIGHT='2', SPOTLIGHT='3',
+    PREV='7', NEXT='9',
+    SHADE='5'
+};
 enum SPOTLIGHT { INC='+', DEC='-' };
+enum SHADING { GOURAUD, PHONE };
 
 class Model;
 
@@ -94,6 +101,7 @@ public:
 
     void toggle_gallery();
     void toggle_light(char k);
+    void toggle_shading(char k);
     
     void switch_model(char k);
     void select_model(char k);
@@ -134,6 +142,8 @@ private:
     int cur_idx;
     int light_idx;
     int size;
+
+    int shading;
 
     Matrix4 camera_trans, pad_perspective;
     Matrix4 P_parallel, P_perspective;
