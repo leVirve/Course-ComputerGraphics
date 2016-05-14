@@ -68,8 +68,9 @@ struct GLResource {
     LightResource LightSource[3];
 };
 
-enum CONTROL_MODE { TRANSLATE = 'T', ROTATE = 'R', SCALE = 'S', EYE = 'E', LIGHT };
-enum LIGHT { DIRECTIONAL = '1', POINTLIGHT = '2', SPOTLIGHT = '3'};
+enum CONTROL_MODE { TRANSLATE = 'T', ROTATE = 'R', SCALE = 'S', EYE = 'E', LIGHT = 'D' };
+enum LIGHT { DIRECTIONAL='1', POINTLIGHT='2', SPOTLIGHT='3', PREV='7', NEXT='9' };
+enum SPOTLIGHT { INC='+', DEC='-' };
 
 class Model;
 
@@ -87,6 +88,7 @@ public:
     void setup_world_matrix();
 
     void handle_control(char k);
+    void handle_spotlight(char k);
 
     void activate();
 
@@ -95,6 +97,7 @@ public:
     
     void switch_model(char k);
     void select_model(char k);
+    void select_light(char k);
 
     void move_camera(Vector3 & v);
     void move_light(Vector3 & v);
@@ -129,6 +132,7 @@ private:
 
     int index;
     int cur_idx;
+    int light_idx;
     int size;
 
     Matrix4 camera_trans, pad_perspective;

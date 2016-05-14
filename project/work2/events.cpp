@@ -46,8 +46,7 @@ void onMouseMotion(int x, int y)
 void onKeyboard(unsigned char key, int x, int y)
 {
     char k = toupper(key);
-    switch (k)
-    {
+    switch (k) {
     case GLUT_KEY_ESC: exit(0); break;
     case HELP_DOC_KEY: system("clear"); puts(doc.c_str()); break;
     case RESET_WORLD_KEY: world.setup_camera(); break;
@@ -55,9 +54,10 @@ void onKeyboard(unsigned char key, int x, int y)
     case CH_PROJ_KEY: world.parallel_project = !world.parallel_project; break;
     case MODE_GALLERY_KEY:
         world.toggle_gallery(); break;
-    case SELECT_NEXT_KEY:
-    case SELECT_PREV_KEY:
+    case SELECT_NEXT_KEY: case SELECT_PREV_KEY:
         world.select_model(k); break;
+    case LIGHT::PREV: case LIGHT::NEXT:
+        world.select_light(k); break;
     case LIGHT::DIRECTIONAL:
     case LIGHT::POINTLIGHT:
     case LIGHT::SPOTLIGHT:
@@ -66,9 +66,12 @@ void onKeyboard(unsigned char key, int x, int y)
     case CONTROL_MODE::SCALE:
     case CONTROL_MODE::ROTATE:
     case CONTROL_MODE::EYE:
+    case CONTROL_MODE::LIGHT:
         if (k == CONTROL_MODE::ROTATE) world.spin_display = !world.spin_display;
         world.control_mode = k;
         printf("** In control mode: %s **\n", mode_desc[k]); break;
+    case SPOTLIGHT::INC: case SPOTLIGHT::DEC:
+        world.handle_spotlight(k); break;
     case POS_X_KEY: case NEG_X_KEY:
     case POS_Y_KEY: case NEG_Y_KEY:
     case POS_Z_KEY: case NEG_Z_KEY:

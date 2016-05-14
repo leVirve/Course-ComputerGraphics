@@ -15,7 +15,9 @@ std::map<char, Vector3> coord = {
 std::map<char, int> light_map = {
     {LIGHT::DIRECTIONAL, 0},
     {LIGHT::POINTLIGHT, 1},
-    {LIGHT::SPOTLIGHT, 2}
+    {LIGHT::SPOTLIGHT, 2},
+    {LIGHT::NEXT, 1},
+    {LIGHT::PREV, -1}
 };
 
 
@@ -24,7 +26,7 @@ World::World(std::string folder)
     this->folder = folder;
     this->znear = 1, this->zfar = 20;
     this->gallery_size = 1;
-    this->index = this->cur_idx = 0;
+    this->index = this->cur_idx = this->light_idx = 0;
     this->solid = true;
     this->parallel_project = true;
     this->spin_display = false;
@@ -94,7 +96,14 @@ void World::update_lights()
 
 void World::move_light(Vector3& v)
 {
-    lights[0].position;// += v;
+    for (int i = 0; i < 3; ++i) lights[light_idx].position[i] += v[i];
+    update_lights();
+}
+
+void World::handle_spotlight(char k)
+{
+    lights[light_map[LIGHT::SPOTLIGHT]].spotCutoff += 0.1f;
+    update_lights();
 }
 
 void World::handle_control(char k)
@@ -165,6 +174,13 @@ void World::select_model(char k)
     this->cur_idx = next % gallery_size;
     this->cur_model = models[cur_idx];
     printf("- Model#%d is selected\n", cur_idx + 1);
+}
+
+void World::select_light(char k)
+{
+    int next = k == LIGHT::NEXT ? light_idx + 1 : light_idx + 3 - 1;
+    this->light_idx = next % 3;
+    printf("- LightSource#%d is selected\n", light_idx + 1);
 }
 
 void World::switch_model(char k)

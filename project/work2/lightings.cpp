@@ -31,7 +31,7 @@ void setLightingSource()
     world.lights[1].is_on = 0;
 
     /** Spotlight **/
-    set(world.lights[2].position, Vector4(0, 0, 12, 1));
+    set(world.lights[2].position, Vector4(0, 0, 5, 1));
     set(world.lights[2].ambient, Vector4(0.5f, 0.5f, 0.5f, 1));
     set(world.lights[2].diffuse, Vector4(1, 1, 1, 1));
     set(world.lights[2].specular, Vector4(0.6f, 0.8f, 0.8f, 1));
@@ -39,7 +39,7 @@ void setLightingSource()
     world.lights[2].constantAttenuation = 0.4f;
     world.lights[2].linearAttenuation = 0.8f;
     world.lights[2].quadraticAttenuation = 0.3f;
-    world.lights[2].spotCutoff = 1;
+    world.lights[2].spotCutoff = 2;
     world.lights[2].spotExponent = 1;
     world.lights[2].is_on = 0;
 }

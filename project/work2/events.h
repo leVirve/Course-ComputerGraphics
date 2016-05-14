@@ -14,10 +14,6 @@
 # define SELECT_NEXT_KEY   'X'
 # define SELECT_PREV_KEY   'Z'
 # define MODE_GALLERY_KEY  'G'
-# define MODE_TRANS_KEY    'T'
-# define MODE_SCALE_KEY    'S'
-# define MODE_ROTATE_KEY   'R'
-# define MODE_EYE_KEY      'E'
 # define CH_PROJ_KEY       'P'
 # define POS_X_KEY         'L'
 # define NEG_X_KEY         'J'
@@ -31,10 +27,11 @@
 
 
 static std::map<char, const char*> mode_desc = {
-    { MODE_EYE_KEY,    "Eye Mode" },
-    { MODE_ROTATE_KEY, "Rotate Mode" },
-    { MODE_TRANS_KEY,  "Translate Mode" },
-    { MODE_SCALE_KEY,  "Scale Mode" },
+    { CONTROL_MODE::EYE,       "Eye Mode" },
+    { CONTROL_MODE::ROTATE,    "Rotate Mode" },
+    { CONTROL_MODE::TRANSLATE, "Translate Mode" },
+    { CONTROL_MODE::SCALE,     "Scale Mode" },
+    { CONTROL_MODE::LIGHT,     "Lighting Mode" },
 };
 
 static std::string doc = "##############################################################\n"
