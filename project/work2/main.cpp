@@ -40,7 +40,6 @@ int main(int argc, char **argv)
     glutMotionFunc  (onMouseMotion);
     glutReshapeFunc (onWindowReshape);
 
-    setLightingSource();
     setShaders();
 
     glEnable(GL_DEPTH_TEST);

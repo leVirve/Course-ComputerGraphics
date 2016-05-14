@@ -68,6 +68,8 @@ struct GLResource {
     LightResource LightSource[3];
 };
 
+enum CONTROL_MODE { TRANSLATE = 'T', ROTATE = 'R', SCALE = 'S', EYE = 'E', LIGHT };
+enum LIGHT { DIRECTIONAL = '1', POINTLIGHT = '2', SPOTLIGHT = '3'};
 
 class Model;
 
@@ -79,25 +81,28 @@ public:
     World(std::string folder);
     ~World();
 
-    void control(char k);
+    void display();
+
+    void setup_camera();
+    void setup_world_matrix();
+
+    void handle_control(char k);
 
     void activate();
 
-    void toggleSolid();
-    void toggleGallery();
-    void toggleLight(int idx);
-
-    void loadNextModel();
-    void loadPrevModel();
-
-    void selectNextModel();
-    void selectPrevModel();
+    void toggle_gallery();
+    void toggle_light(char k);
+    
+    void switch_model(char k);
+    void select_model(char k);
 
     void move_camera(Vector3 & v);
     void move_light(Vector3 & v);
     void update_lights();
 
     bool solid;
+    bool spin_display;
+    bool parallel_project;
     int gallery_size;
     char control_mode;
     
@@ -112,60 +117,27 @@ public:
 
     LightSource lights[max_lights];
 
-    Matrix4 P, V, M;
-
     Vector3 up, eye, center;
+
+    float znear, zfar;
 
 private:
 
-    void findAllModels(const char *name, int level);
+    void find_models(const char *name, int level);
 
-    void loadOBJ();
+    void load_obj();
 
     int index;
     int cur_idx;
     int size;
 
+    Matrix4 camera_trans, pad_perspective;
+    Matrix4 P_parallel, P_perspective;
+
     std::string folder;
     std::vector<std::string> filenames;
 
 };
-
-
-
-const int right = 1, left = -1,
-          top = 1, bottom = -1,
-          znear = 1, zfar = 20;
-
-const Matrix4 P_paral = 
-    Matrix4(
-        1, 0,  0, 0,
-        0, 1,  0, 0,
-        0, 0, -1, 0,
-        0, 0,  0, 1
-    );
-
-const Matrix4 P_ortho =
-    Matrix4(
-        2 * znear / (right - left), 0, (right + left) / (right - left), 0,
-        0, 2 * znear / (top - bottom), (top + bottom) / (top - bottom), 0,
-        0, 0, -(zfar + znear) / (zfar - znear), -2 * zfar * znear / (zfar - znear),
-        0, 0, -1, 0
-     );
-
-const Matrix4 V_paral;
-
-const Matrix4 V_ortho = 
-    Matrix4(
-        1, 0, 0,  0,
-        0, 1, 0,  0,
-        0, 0, 1, -2,
-        0, 0, 0,  1
-    );
-
-
-enum CONTROL_MODE { TRANSLATE = 'T', ROTATE = 'R', SCALE = 'S', EYE = 'E', LIGHT };
-
 
 extern LightSource lights[3];
 extern World world;

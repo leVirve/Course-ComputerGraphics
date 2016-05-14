@@ -19,7 +19,7 @@ void bindResources(GLint p)
     GL_BIND(Material.ambient);
     GL_BIND(Material.diffuse);
     GL_BIND(Material.specular);
-#define GL_LIGHT_BIND(i) \
+#define GL_LIGHT_BIND(i)  \
     GL_BIND(LightSource[i].position);  \
     GL_BIND(LightSource[i].ambient);  \
     GL_BIND(LightSource[i].diffuse);  \

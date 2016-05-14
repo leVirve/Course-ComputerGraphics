@@ -39,7 +39,7 @@ void main() {
 
     gl_Position = MVP * Position;
 
-    vec4 r = vec4(0, 0, 0, 1);
+    vec4 color = vec4(0, 0, 0, 1);
 
     for (int i = 0; i < 3; ++i) {
 
@@ -80,8 +80,8 @@ void main() {
         vec4 diffuse = Material.diffuse * LightSource[i].diffuse * max(dot(L, N), 0);
         vec4 specular = Material.specular * LightSource[i].specular * pow(max(dot(H, N), 0), 0.87);
 
-        r += ambient + attenuation * (diffuse + specular);
+        color += ambient + attenuation * (diffuse + specular);
     }
 
-    vv4color = r;
+    vv4color = color;
 }

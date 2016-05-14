@@ -24,7 +24,9 @@ public:
 
     ~Model();
 
-    GLMmodel * get_obj_model(const char * filename);
+    GLMmodel *get_obj_model(const char *filename);
+
+    Matrix4 get_model_trans_matrix() { return t * s * r * n; }
 
     Matrix4 t, s, r, n;
 

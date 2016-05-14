@@ -58,7 +58,7 @@ void Model::load_to_buffer()
     num_groups = body->numgroups;
     groups = new SubModel[num_groups];
 
-    for (GLMgroup* g = body->groups; g; g = g->next) {
+    for (GLMgroup* g = body->groups; g; g = g->next, g_id++) {
  
         unsigned int num_points = g->numtriangles * points_per_triangle;
         groups[g_id].num_points = num_points;
@@ -77,8 +77,6 @@ void Model::load_to_buffer()
                 }
             }
         }
-        g_id++;
-
     }
 }
 
