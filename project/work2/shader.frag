@@ -85,7 +85,7 @@ void main() {
         diffuse = Material.diffuse * LightSource[i].diffuse * max(dot(L, N), 0);
         if (dot(L, N) != 0.0) {
             vec3 refVector = reflect(-L, N);
-            specular = Material.specular * LightSource[i].specular * pow(max(dot(V, refVector), 0), 10);
+            specular = Material.specular * LightSource[i].specular * pow(max(dot(V, refVector), 0), 0.2 * max(Material.shininess, 20));
             // half way vector
             // specular = Material.specular * LightSource[i].specular * pow(max(dot(H, N), 0), 10);
         }

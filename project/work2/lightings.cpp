@@ -9,7 +9,7 @@ void set(float (&p)[4], Vector4 v)
 void setLightingSource()
 {
     /** Directional Light **/
-    set(world.lights[0].position, Vector4(0, 0, 5, 0));
+    set(world.lights[0].position, Vector4(0, 0, 10, 0));
     set(world.lights[0].ambient, Vector4(0.5f, 0.5f, 0.5f, 1));
     set(world.lights[0].diffuse, Vector4(1, 1, 1, 1));
     set(world.lights[0].specular, Vector4(0.4f, 0.4f, 0.4f, 1));
@@ -31,8 +31,8 @@ void setLightingSource()
 
     /** Spotlight **/
     set(world.lights[2].position, Vector4(0, 0, 5, 1));
-    set(world.lights[2].ambient, Vector4(0.5f, 0.5f, 0.5f, 1));
-    set(world.lights[2].diffuse, Vector4(1, 1, 1, 1));
+    set(world.lights[2].ambient, Vector4(0.2f, 0.2f, 0.2f, 1));
+    set(world.lights[2].diffuse, Vector4(0.4f, 0.4f, 0.4f, 1));
     set(world.lights[2].specular, Vector4(0.6f, 0.8f, 0.8f, 1));
     set(world.lights[2].spotDirection, Vector4(0, 0, -1, 0));
     world.lights[2].constantAttenuation = 0.4f;
