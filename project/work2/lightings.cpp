@@ -23,7 +23,7 @@ void setLightingSource()
     set(world.lights[1].ambient, Vector4(0.5f, 0.5f, 0.5f, 1));
     set(world.lights[1].diffuse, Vector4(1, 1, 1, 1));
     set(world.lights[1].specular, Vector4(1.0f, 1.0f, 1.0f, 1));
-    world.lights[1].constantAttenuation = 0.1;
+    world.lights[1].constantAttenuation = 0.1f;
     world.lights[1].linearAttenuation = 0.04f;
     world.lights[1].quadraticAttenuation = 0.0004f;
     world.lights[1].spotCutoff = 0;
