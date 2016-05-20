@@ -42,6 +42,9 @@ typedef struct _GLMmaterial
   GLfloat specular[4];          /* specular component */
   GLfloat emmissive[4];         /* emmissive component */
   GLfloat shininess;            /* specular exponent */
+  GLfloat illum;
+  char textureImageName[128];
+  int textureID;
 } GLMmaterial;
 
 /* GLMtriangle: Structure that defines a triangle in a model.
@@ -66,8 +69,6 @@ typedef struct _GLMgroup {
 /* GLMmodel: Structure that defines a model.
  */
 typedef struct _GLMmodel {
-  GLfloat scale;				/* the scale to make the model's max width as 2 unit */
-
   char*    pathname;            /* path to this model */
   char*    mtllibname;          /* name of the material library */
 
@@ -95,6 +96,16 @@ typedef struct _GLMmodel {
 
   GLfloat position[3];          /* position of the model */
 } GLMmodel;
+
+
+/* glmUnitize: "unitize" a model by translating it to the origin and
+ * scaling it to fit in a unit cube around the origin.  Returns the
+ * scalefactor used.
+ *
+ * model - properly initialized GLMmodel structure
+ */
+GLfloat
+glmUnitize(GLMmodel* model);
 
 /* glmDimensions: Calculates the dimensions (width, height, depth) of
  * a model.
@@ -156,8 +167,8 @@ glmVertexNormals(GLMmodel* model, GLfloat angle);
  *
  * model - pointer to initialized GLMmodel structure
  */
-/*GLvoid
-glmLinearTexture(GLMmodel* model)*/;
+GLvoid
+glmLinearTexture(GLMmodel* model);
 
 /* glmSpheremapTexture: Generates texture coordinates according to a
  * spherical projection of the texture map.  Sometimes referred to as
@@ -187,7 +198,7 @@ glmDelete(GLMmodel* model);
  * filename - name of the file containing the Wavefront .OBJ format data.  
  */
 GLMmodel* 
-glmReadOBJ(char* filename);
+glmReadOBJ(const char* filename);
 
 /* glmWriteOBJ: Writes a model description in Wavefront .OBJ format to
  * a file.
@@ -202,7 +213,7 @@ glmReadOBJ(char* filename);
  *            GLM_FLAT and GLM_SMOOTH should not both be specified.
  */
 GLvoid
-glmWriteOBJ(GLMmodel* model, char* filename, GLuint mode);
+glmWriteOBJ(GLMmodel* model, const char* filename, GLuint mode);
 
 /* glmDraw: Renders the model to the current OpenGL context using the
  * mode specified.
@@ -215,8 +226,8 @@ glmWriteOBJ(GLMmodel* model, char* filename, GLuint mode);
  *            GLM_TEXTURE -  render with texture coords
  *            GLM_FLAT and GLM_SMOOTH should not both be specified.
  */
-//GLvoid
-//glmDraw(GLMmodel* model, GLuint mode);
+GLvoid
+glmDraw(GLMmodel* model, GLuint mode);
 
 /* glmList: Generates and returns a display list for the model using
  * the mode specified.
@@ -229,8 +240,8 @@ glmWriteOBJ(GLMmodel* model, char* filename, GLuint mode);
  *            GLM_TEXTURE -  render with texture coords
  *            GLM_FLAT and GLM_SMOOTH should not both be specified.  
  */
-/*GLuint
-glmList(GLMmodel* model, GLuint mode)*/;
+GLuint
+glmList(GLMmodel* model, GLuint mode);
 
 /* glmWeld: eliminate (weld) vectors that are within an epsilon of
  * each other.
@@ -272,7 +283,7 @@ glmWeld(GLMmodel* model, GLfloat epsilon);
  *
  */
 GLubyte* 
-glmReadPPM(char* filename, int* width, int* height);
+glmReadPPM(const char*filename, int* width, int* height);
 
 #ifdef __cplusplus
 }
