@@ -159,8 +159,10 @@ private:
 extern LightSource lights[3];
 extern World world;
 
-#ifndef VERBOSE
+#ifdef VERBOSE
   #define VERBOSE(x) do { std::cout << x; } while (0)
+  #define VERBOSE_P(X) X
 #else
-  #define VERBOSE
+  #define VERBOSE(X)
+  #define VERBOSE_P(X)
 #endif // VERBOSE

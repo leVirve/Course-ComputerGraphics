@@ -252,13 +252,13 @@ void World::find_models(const char *name, int level)
         if (entry->d_type == DT_DIR) {
             if (strcmp(entry->d_name, ".") == 0
              || strcmp(entry->d_name, "..") == 0) continue;
-            VERBOSE("%*s[%s]\n", level * 2, "", entry->d_name);
+            VERBOSE_P(printf("%*s[%s]\n", level * 2, "", entry->d_name));
             this->find_models(path, level + 1);
         }
         else {
             if (strstr(entry->d_name, ".mtl") || strstr(entry->d_name, ".bmp")) continue;
             this->filenames.push_back(path);
-            VERBOSE("%*s- <loaded> %s\n", level * 2, "", entry->d_name);
+            VERBOSE_P(printf("%*s- <loaded> %s\n", level * 2, "", entry->d_name));
         }
     } while (entry = readdir(dir));
     closedir(dir);
