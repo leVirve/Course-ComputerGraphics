@@ -60,6 +60,7 @@ void World::display()
         Matrix4 M = models[i]->get_model_trans_matrix();
         Matrix4 mvp = (P * V * M).transpose();
         M.transpose();
+        V.transpose();
 
         glUniformMatrix4fv(world.R.MVP, 1, GL_FALSE, mvp.get());
         glUniformMatrix4fv(world.R.ModelTrans, 1, GL_FALSE, M.get());

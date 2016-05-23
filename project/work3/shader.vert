@@ -50,16 +50,20 @@ void main() {
 
     vec4 color = vec4(0, 0, 0, 1);
 
+    mat4 ModelViewMatrix = ViewTrans * ModelTrans;
+    mat4 NormalMatrix = transpose(inverse(ModelViewMatrix));
+
+    vec3 model_position_camera = (ModelViewMatrix * Position).xyz;
+
     for (int i = 0; i < 3; ++i) {
 
         if (LightSource[i].is_on == 0) continue;
 
         vec4 ambient, diffuse, specular;
 
-        vec3 model_position_camera = (ViewTrans * ModelTrans * Position).xyz;
         vec3 light_position_camera = (ViewTrans * LightSource[i].position).xyz;
 
-        vec3 N = normalize((transpose(inverse(ModelTrans)) * vec4(Normal, 0)).xyz);
+        vec3 N = normalize((NormalMatrix * vec4(Normal, 0)).xyz);
         vec3 L = normalize(light_position_camera);
         vec3 V = normalize(EyePosition - model_position_camera);
         vec3 H = normalize(L + V);
@@ -67,7 +71,7 @@ void main() {
 
         /* For Point Light */
         if (LightSource[i].position.w == 1) {
-            L = normalize(light_position_camera - model_position_camera);
+            L = light_position_camera - model_position_camera;
 
             float d = length(L);
             attenuation = min(1, 1 / (
@@ -75,6 +79,7 @@ void main() {
                 + LightSource[i].linearAttenuation * d
                 + LightSource[i].quadraticAttenuation * d * d
             ));
+            L = normalize(L);
 
             /* For Spotlight */
             if (LightSource[i].spotCutoff != 0) {
