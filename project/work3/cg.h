@@ -29,6 +29,7 @@ struct LightSource {
     float spotDirection[4];
     float spotExponent;
     float spotCutoff; // (range: [0.0,90.0], 180.0)
+    float spotCosCutoff; // (range: [1.0,0.0],-1.0)
     float constantAttenuation;
     float linearAttenuation;
     float quadraticAttenuation;

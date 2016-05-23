@@ -82,23 +82,30 @@ void main() {
             L = normalize(L);
 
             /* For Spotlight */
-            if (LightSource[i].spotCutoff != 0) {
-                vec3 v = -L;
+            if (LightSource[i].spotCutoff <= 90.0) {
                 vec3 dir = normalize((transpose(inverse(ViewTrans)) * LightSource[i].spotDirection).xyz);
-                float theta = degrees(acos(dot(v, dir)));
-                if (theta < LightSource[i].spotCutoff) {
-                    attenuation *= pow(max(dot(v, dir), 0), LightSource[i].spotExponent);
-                } else attenuation = 0;
+                float cos_theta = max(0, dot(-L, dir));
+                float theta = degrees(acos(cos_theta));
+                if (theta > LightSource[i].spotCutoff)
+                    attenuation = 0;
+                else attenuation *= pow(cos_theta, LightSource[i].spotExponent);
             }
         }
 
         ambient = Material.ambient * LightSource[i].ambient;
-        diffuse = Material.diffuse * LightSource[i].diffuse * max(dot(L, N), 0);
-        if (dot(L, N) != 0.0) {
+        diffuse = attenuation
+          * Material.diffuse
+          * LightSource[i].diffuse
+          * max(dot(L, N), 0);
+
+        if (dot(L, N) > 0.0) {
             vec3 refVector = reflect(-L, N);
-            // specular = Material.specular * LightSource[i].specular * pow(max(dot(V, refVector), 0), 10);
+            specular = attenuation
+              * Material.specular
+              * LightSource[i].specular
+              * pow(max(dot(V, refVector), 0), 0.2 * max(Material.shininess, 20));
             // half way vector
-            specular = Material.specular * LightSource[i].specular * pow(max(dot(H, N), 0), 0.2 * max(Material.shininess, 20));
+            // specular = Material.specular * LightSource[i].specular * pow(max(dot(H, N), 0), 0.2 * max(Material.shininess, 20));
         }
 
         color += ambient + attenuation * (diffuse + specular);
