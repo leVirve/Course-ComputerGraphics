@@ -7,6 +7,7 @@ void bindResources(GLint p)
     world.R.X = glGetAttribLocation(p, #X)
     GL_BIND(Position);
     GL_BIND(Normal);
+    GL_BIND(TexCoord);
 #undef GL_BIND
 
 #define GL_BIND(X)  \

@@ -28,7 +28,7 @@ World::World(std::string folder)
     this->gallery_size = 1;
     this->index = this->cur_idx = this->light_idx = 0;
     this->solid = true;
-    this->parallel_project = true;
+    this->parallel_project = false;
     this->spin_display = false;
     this->shading = SHADING::GOURAUD;
 
@@ -51,6 +51,7 @@ void World::display()
 
     glEnableVertexAttribArray(world.R.Position);
     glEnableVertexAttribArray(world.R.Normal);
+    glEnableVertexAttribArray(world.R.TexCoord);
 
     Matrix4 V = parallel_project ? camera_trans : pad_perspective * camera_trans;
     Matrix4 P = parallel_project ? P_parallel : P_perspective;
@@ -251,13 +252,13 @@ void World::find_models(const char *name, int level)
         if (entry->d_type == DT_DIR) {
             if (strcmp(entry->d_name, ".") == 0
              || strcmp(entry->d_name, "..") == 0) continue;
-            printf("%*s[%s]\n", level * 2, "", entry->d_name);
+            VERBOSE("%*s[%s]\n", level * 2, "", entry->d_name);
             this->find_models(path, level + 1);
         }
         else {
             if (strstr(entry->d_name, ".mtl") || strstr(entry->d_name, ".bmp")) continue;
             this->filenames.push_back(path);
-            printf("%*s- <loaded> %s\n", level * 2, "", entry->d_name);
+            VERBOSE("%*s- <loaded> %s\n", level * 2, "", entry->d_name);
         }
     } while (entry = readdir(dir));
     closedir(dir);

@@ -5,12 +5,15 @@
 
 const int points_per_triangle = 3;
 const int coords_per_point = 3;
+const int tex_coords_per_point = 2;
 
 struct SubModel {
 
-    GLfloat *vertices, *normals;
+    GLfloat *vertices, *normals, *texcoords;
 
     GLMmaterial material;
+
+    GLuint texture;
 
     unsigned int num_points;
 };
@@ -41,6 +44,8 @@ public:
     void draw_buffer();
 
 private:
+
+    void load_texture(SubModel& g, const std::string filename);
 
     void load_to_buffer();
 

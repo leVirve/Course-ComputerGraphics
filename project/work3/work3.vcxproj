@@ -86,6 +86,7 @@
     <ClInclude Include="..\common\dirent.h" />
     <ClInclude Include="..\common\glm.h" />
     <ClInclude Include="..\common\Matrices.h" />
+    <ClInclude Include="..\common\Texture.h" />
     <ClInclude Include="..\common\Vectors.h" />
     <ClInclude Include="cg.h" />
     <ClInclude Include="events.h" />

@@ -18,6 +18,7 @@
 // self-headers
 #include "glm.h"
 #include "dirent.h"
+#include "Texture.h"
 #include "Matrices.h"
 
 
@@ -63,6 +64,7 @@ struct GLResource {
     GLint Position;
     GLint MVP;
     GLint Normal;
+    GLint TexCoord;
     GLint ModelTrans;
     GLint ViewTrans;
     GLint EyePosition;
@@ -103,7 +105,7 @@ public:
     void toggle_gallery();
     void toggle_light(char k);
     void toggle_shading(char k);
-    
+
     void switch_model(char k);
     void select_model(char k);
     void select_light(char k);
@@ -117,7 +119,7 @@ public:
     bool parallel_project;
     int gallery_size;
     char control_mode;
-    
+
     const static int max_models = 4;
     const static int max_lights = 3;
 
@@ -156,3 +158,9 @@ private:
 
 extern LightSource lights[3];
 extern World world;
+
+#ifndef VERBOSE
+  #define VERBOSE(x) do { std::cout << x; } while (0)
+#else
+  #define VERBOSE
+#endif // VERBOSE

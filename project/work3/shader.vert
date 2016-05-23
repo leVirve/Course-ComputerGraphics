@@ -1,8 +1,12 @@
 attribute vec4 Position;
 attribute vec3 Normal;
+attribute vec2 TexCoord;
 
 varying vec4 vv4color;
 varying vec4 vv4position;
+varying vec2 vv2texcoord;
+varying vec4 diffuseColor;
+varying vec4 specularColor;
 
 uniform int  Shading;
 uniform vec3 EyePosition;
@@ -42,13 +46,17 @@ void main() {
 
     gl_Position = MVP * Position;
 
+    vv2texcoord = TexCoord;
+
     if (Shading == 1) {
         vv4color = vec4(Normal, 0);
         vv4position = Position;
         return;
     }
 
-    vec4 color = vec4(0, 0, 0, 1);
+    vec4 color = vec4(0, 0, 0, 1),
+         diffuse_color = vec4(0, 0, 0, 1),
+         specular_color = vec4(0, 0, 0, 1);
 
     mat4 ModelViewMatrix = ViewTrans * ModelTrans;
     mat4 NormalMatrix = transpose(inverse(ModelViewMatrix));
@@ -59,8 +67,9 @@ void main() {
 
         if (LightSource[i].is_on == 0) continue;
 
-        vec4 ambient, diffuse, specular;
-
+        vec4 ambient = vec4(0, 0, 0, 1),
+             diffuse = vec4(0, 0, 0, 1),
+             specular = vec4(0, 0, 0, 1);
         vec3 light_position_camera = (ViewTrans * LightSource[i].position).xyz;
 
         vec3 N = normalize((NormalMatrix * vec4(Normal, 0)).xyz);
@@ -108,8 +117,12 @@ void main() {
             // specular = Material.specular * LightSource[i].specular * pow(max(dot(H, N), 0), 0.2 * max(Material.shininess, 20));
         }
 
-        color += ambient + attenuation * (diffuse + specular);
+        color += ambient + diffuse + specular;
+        diffuse_color += ambient + diffuse;
+        specular_color += specular;
     }
 
     vv4color = color;
+    diffuseColor = diffuse_color;
+    specularColor = specular_color;
 }

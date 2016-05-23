@@ -1,6 +1,10 @@
 varying vec4 vv4color;
 varying vec4 vv4position;
+varying vec2 vv2texcoord;
+varying vec4 diffuseColor;
+varying vec4 specularColor;
 
+uniform sampler2D us2dtexture;
 uniform int  Shading;
 uniform vec3 EyePosition;
 uniform mat4 MVP;
@@ -37,12 +41,17 @@ uniform LightSourceParameters LightSource[3];
 
 void main() {
 
+    vec4 v4texColor = texture2D(us2dtexture, vv2texcoord).bgra;
+
     if (Shading == 0) {
-        gl_FragColor = vv4color;
+        gl_FragColor = diffuseColor * v4texColor + specularColor;
         return;
     }
 
-    vec4 color = vec4(0, 0, 0, 1);
+    vec4 color = vec4(0, 0, 0, 1),
+         diffuse_color = vec4(0, 0, 0, 1),
+         specular_color = vec4(0, 0, 0, 1);
+
     mat4 ModelViewMatrix = ViewTrans * ModelTrans;
     mat4 NormalMatrix = transpose(inverse(ModelViewMatrix));
 
@@ -52,7 +61,9 @@ void main() {
 
         if (LightSource[i].is_on == 0) continue;
 
-        vec4 ambient, diffuse, specular;
+        vec4 ambient = vec4(0, 0, 0, 1),
+             diffuse = vec4(0, 0, 0, 1),
+             specular = vec4(0, 0, 0, 1);
         vec3 light_position_camera = (ViewTrans * LightSource[i].position).xyz;
 
         vec3 N = normalize((NormalMatrix * vv4color).xyz);
@@ -100,8 +111,10 @@ void main() {
             // specular = Material.specular * LightSource[i].specular * pow(max(dot(H, N), 0), 0.2 * max(Material.shininess, 20));
         }
 
-        color += ambient + attenuation * (diffuse + specular);
+        color += ambient + diffuse + specular;
+        diffuse_color += ambient + diffuse;
+        specular_color += specular;
     }
 
-    gl_FragColor = color;
+    gl_FragColor = diffuse_color * v4texColor + specular_color;
 }
