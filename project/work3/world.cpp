@@ -32,6 +32,11 @@ World::World(std::string folder)
     this->spin_display = false;
     this->shading = SHADING::GOURAUD;
 
+    this->texture_switch = 1;
+    this->texture_wrap_mode = GL_REPEAT;
+    this->texture_mag_filter = GL_LINEAR;
+    this->texture_min_filter = GL_LINEAR;
+
     this->setup_camera();
     this->setup_world_matrix();
     this->find_models(this->folder.c_str(), 0);
@@ -52,6 +57,8 @@ void World::display()
     glEnableVertexAttribArray(world.R.Position);
     glEnableVertexAttribArray(world.R.Normal);
     glEnableVertexAttribArray(world.R.TexCoord);
+
+    glUniform1i(world.R.texture_switch, texture_switch);
 
     Matrix4 V = parallel_project ? camera_trans : pad_perspective * camera_trans;
     Matrix4 P = parallel_project ? P_parallel : P_perspective;
@@ -211,6 +218,38 @@ void World::toggle_shading(char k)
 {
     this->shading = shading == SHADING::GOURAUD ? SHADING::PHONE : SHADING::GOURAUD;
     glUniform1i(world.R.Shading, shading);
+}
+
+void World::toggle_texture(char k)
+{
+    this->texture_switch = texture_switch == 1 ? 0 : 1;
+    printf("%s\n", texture_switch ? "Textured" : "Non-textured");
+}
+
+void World::toggle_texture_wrap(char k)
+{
+    this->texture_wrap_mode =
+        texture_wrap_mode == GL_REPEAT ?
+        GL_CLAMP_TO_EDGE : GL_REPEAT;
+    printf("Texture in `%s` mode\n", texture_wrap_mode == GL_REPEAT ?
+        "GL_REPEAT" : "GL_CLAMP_TO_EDGE");
+}
+
+void World::toggle_texture_filter(char k)
+{
+    if (k == 'F') {
+        this->texture_mag_filter =
+            texture_mag_filter == GL_NEAREST ?
+            GL_LINEAR : GL_NEAREST;
+        printf("Texture mag filter `%s` mode\n", texture_mag_filter == GL_NEAREST ?
+            "GL_NEAREST" : "GL_LINEAR");
+    } else {
+        this->texture_min_filter =
+            texture_min_filter == GL_NEAREST ?
+            GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST;
+        printf("Texture min filter `%s` mode\n", texture_min_filter == GL_NEAREST ?
+            "GL_NEAREST" : "GL_LINEAR_MIPMAP_LINEAR");
+    }
 }
 
 void World::load_obj()

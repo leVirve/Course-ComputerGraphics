@@ -68,6 +68,7 @@ struct GLResource {
     GLint ModelTrans;
     GLint ViewTrans;
     GLint EyePosition;
+    GLint texture_switch;
     LightResource Material;
     LightResource LightSource[3];
 };
@@ -105,6 +106,9 @@ public:
     void toggle_gallery();
     void toggle_light(char k);
     void toggle_shading(char k);
+    void toggle_texture(char k);
+    void toggle_texture_wrap(char k);
+    void toggle_texture_filter(char k);
 
     void switch_model(char k);
     void select_model(char k);
@@ -119,6 +123,11 @@ public:
     bool parallel_project;
     int gallery_size;
     char control_mode;
+
+    int texture_switch;
+    GLint texture_wrap_mode;
+    GLint texture_mag_filter;
+    GLint texture_min_filter;
 
     const static int max_models = 4;
     const static int max_lights = 3;

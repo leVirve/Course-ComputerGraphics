@@ -20,7 +20,7 @@ GLMmodel* Model::get_obj_model(const char* filename)
 {
     GLMmodel* m = glmReadOBJ((char*) filename);
     if (m->numnormals == 0) {
-        printf("Auto generating normals...");
+        VERBOSE("Auto generating normals...");
         glmFacetNormals(m);
         glmVertexNormals(m, 90.0);
     }
@@ -94,7 +94,6 @@ void Model::load_to_buffer()
 
         if (strlen(body->materials[g->material].textureImageName) != 0
             && strcmp(g->name, "default") != 0 /* for compability of default group */) {
-            //glGenTextures(1, &groups[g_id].texture);
             load_texture(groups[g_id], body->materials[g->material].textureImageName);
             VERBOSE("Texture resourse id " << groups[g_id].texture << std::endl);
         }
@@ -147,11 +146,11 @@ void Model::draw_buffer()
 
         glBindTexture(GL_TEXTURE_2D, groups[i].texture);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, world.texture_mag_filter);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, world.texture_min_filter);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, world.texture_wrap_mode);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, world.texture_wrap_mode);
 
         glDrawArrays(GL_TRIANGLES, 0, groups[i].num_points);
     }

@@ -50,7 +50,12 @@ void onKeyboard(unsigned char key, int x, int y)
     case GLUT_KEY_ESC: exit(0); break;
     case HELP_DOC_KEY: system("clear"); puts(doc.c_str()); break;
     case RESET_WORLD_KEY: world.setup_camera(); break;
-    case CHANGE_MODE_KEY_W: world.solid = !world.solid; break;
+    case 'W':
+        if (key == 'w') world.solid = !world.solid;
+        else world.toggle_texture_wrap(k);
+        break;
+    case 'F': world.toggle_texture_filter(key); break;
+    case 'Y': world.toggle_texture(k); break;
     case CH_PROJ_KEY: world.parallel_project = !world.parallel_project; break;
     case MODE_GALLERY_KEY:
         world.toggle_gallery(); break;

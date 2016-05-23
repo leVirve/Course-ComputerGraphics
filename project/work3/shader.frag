@@ -6,6 +6,7 @@ varying vec4 specularColor;
 
 uniform sampler2D us2dtexture;
 uniform int  Shading;
+uniform int  texture_switch;
 uniform vec3 EyePosition;
 uniform mat4 MVP;
 uniform mat4 ViewTrans;
@@ -44,7 +45,8 @@ void main() {
     vec4 v4texColor = texture2D(us2dtexture, vv2texcoord).bgra;
 
     if (Shading == 0) {
-        gl_FragColor = diffuseColor * v4texColor + specularColor;
+        gl_FragColor = texture_switch == 1 ?
+            diffuseColor * v4texColor + specularColor : vv4color;
         return;
     }
 
@@ -116,5 +118,6 @@ void main() {
         specular_color += specular;
     }
 
-    gl_FragColor = diffuse_color * v4texColor + specular_color;
+    gl_FragColor = texture_switch == 1 ?
+        diffuse_color * v4texColor + specular_color : color;
 }

@@ -17,6 +17,7 @@ void bindResources(GLint p)
     GL_BIND(ModelTrans);
     GL_BIND(ViewTrans);
     GL_BIND(EyePosition);
+    GL_BIND(texture_switch);
     GL_BIND(Material.position);
     GL_BIND(Material.ambient);
     GL_BIND(Material.diffuse);
@@ -132,4 +133,3 @@ int textFileWrite(char *fn, char *s)
     }
     return(status);
 }
-

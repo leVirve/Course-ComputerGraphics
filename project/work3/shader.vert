@@ -9,6 +9,7 @@ varying vec4 diffuseColor;
 varying vec4 specularColor;
 
 uniform int  Shading;
+uniform int  texture_switch;
 uniform vec3 EyePosition;
 uniform mat4 MVP;
 uniform mat4 ViewTrans;
