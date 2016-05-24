@@ -19,7 +19,7 @@ void setLightingSource()
     world.lights[0].is_on = 1;
 
     /** Point Light **/
-    set(world.lights[1].position, Vector4(0, 0, 5, 1));
+    set(world.lights[1].position, Vector4(0, 0, 15, 1));
     set(world.lights[1].ambient, Vector4(0.5f, 0.5f, 0.5f, 1));
     set(world.lights[1].diffuse, Vector4(0.4f, 0.4f, 0.4f, 1));
     set(world.lights[1].specular, Vector4(0.6f, 0.6f, 0.6f, 1));
